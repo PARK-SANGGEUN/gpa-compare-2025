@@ -7,19 +7,25 @@
   <script defer src="script.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    table th, table td {
-      border: 1px solid #d1d5db;
-      padding: 0.5rem;
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 0.75rem;
     }
-    table tr:hover {
-      background-color: #f9fafb;
+    th {
+      background-color: #e0f2fe;
+      font-weight: 700;
+      text-align: center;
+    }
+    tr:hover {
+      background-color: #f0f9ff;
+      transition: background-color 0.3s ease;
     }
     select:focus {
-      outline: 2px solid #3b82f6;
+      outline: 2px solid #2563eb;
     }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-gradient-to-br from-gray-100 to-white text-gray-800 font-sans min-h-screen">
 
   <div class="max-w-7xl mx-auto px-4 py-8">
     <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-blue-800 drop-shadow mb-2">
@@ -34,16 +40,18 @@
     </ul>
 
     <div class="flex flex-wrap justify-center gap-3 mb-6">
-      <select class="university-select border border-blue-300 rounded px-3 py-2 shadow-sm text-sm"></select>
-      <select class="university-select border border-blue-300 rounded px-3 py-2 shadow-sm text-sm"></select>
-      <select class="university-select border border-blue-300 rounded px-3 py-2 shadow-sm text-sm"></select>
+      <select id="collegeSelect1" class="university-select border border-blue-300 rounded px-3 py-2 shadow-sm text-sm"></select>
+      <select id="collegeSelect2" class="university-select border border-blue-300 rounded px-3 py-2 shadow-sm text-sm"></select>
+      <select id="collegeSelect3" class="university-select border border-blue-300 rounded px-3 py-2 shadow-sm text-sm"></select>
       <button id="resetBtn" class="bg-red-100 hover:bg-red-200 text-red-600 font-semibold px-4 py-2 rounded shadow-sm transition">
         초기화
       </button>
     </div>
 
-    <div id="tableContainer" class="overflow-x-auto rounded-lg shadow border border-gray-200 bg-white p-4">
-      <p class="text-center text-gray-400 text-sm">대학을 선택하면 결과가 여기에 표시됩니다.</p>
+    <div id="tableContainer" class="overflow-x-auto rounded-lg shadow border border-gray-300 bg-white p-4">
+      <table id="comparisonTable" class="table-auto w-full text-sm text-center">
+        <!-- JS로 내용 삽입 -->
+      </table>
     </div>
   </div>
 
