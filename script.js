@@ -7,16 +7,20 @@ async function loadData() {
         jsonData = await response.json();
 
         populateDropdowns();
-        renderTable();  // 최초 전체 테이블 출력
+        renderTable();  // 초기에는 전체 대학 보여주기
     } catch (error) {
         console.error("데이터 로딩 실패:", error);
     }
 }
 
 function populateDropdowns() {
-    const dropdowns = [document.getElementById('collegeSelect1'), document.getElementById('collegeSelect2'), document.getElementById('collegeSelect3')];
+    const dropdowns = [
+        document.getElementById('collegeSelect1'),
+        document.getElementById('collegeSelect2'),
+        document.getElementById('collegeSelect3')
+    ];
 
-    // 대학 리스트는 8행부터 시작하는 키들 (제공된 JSON 기준)
+    // JSON 데이터에서 열 이름 추출 (첫 행 기준)
     const universityNames = Object.keys(jsonData[0]).filter(col => col !== "70%컷");
 
     dropdowns.forEach(dropdown => {
@@ -34,7 +38,7 @@ function populateDropdowns() {
         });
     });
 
-    // 초기화 버튼 기능
+    // 초기화 버튼 처리
     const resetBtn = document.getElementById('resetBtn');
     resetBtn.addEventListener('click', () => {
         selectedUniversities = [];
@@ -50,24 +54,21 @@ function renderTable() {
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
 
+    // 첫 번째 열 (70%컷)
     const thBase = document.createElement('th');
     thBase.textContent = '70%컷';
-    thBase.className = 'bg-blue-100 border px-2 py-2 text-sm font-semibold';
+    thBase.className = 'bg-blue-100 border px-2 py-2 text-sm font-semibold text-center';
     headerRow.appendChild(thBase);
 
-    let columns = [];
-
-    if (selectedUniversities.length === 0) {
-        // 전체 출력
-        columns = Object.keys(jsonData[0]).filter(key => key !== "70%컷");
-    } else {
-        columns = selectedUniversities;
-    }
+    // 선택된 대학이 없으면 전체 대학 표시
+    const columns = selectedUniversities.length === 0
+        ? Object.keys(jsonData[0]).filter(key => key !== "70%컷")
+        : selectedUniversities;
 
     columns.forEach(col => {
         const th = document.createElement('th');
         th.textContent = col;
-        th.className = 'bg-blue-100 border px-2 py-2 text-sm font-semibold';
+        th.className = 'bg-blue-100 border px-2 py-2 text-sm font-semibold text-center';
         headerRow.appendChild(th);
     });
 
