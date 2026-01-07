@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>모두의 2025 교과전형 배치표</title>
+  <title>모두의 2025학년도 교과전형 배치표</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -18,12 +18,14 @@
 
     <div class="controls">
       <input type="text" id="searchInput" placeholder="학과명, 전형 검색..." />
-      <select class="university-select"></select>
+      <select id="universitySelect" class="university-select"></select>
       <button id="addCompare" class="add">+ 비교 추가</button>
       <button id="reset" class="reset">초기화</button>
     </div>
 
-    <div id="table-container" class="table-wrapper"></div>
+    <div id="table-container" class="table-wrapper">
+      <!-- script.js에서 동적으로 테이블이 삽입됩니다 -->
+    </div>
 
     <button id="scrollTopBtn" title="맨 위로">▲</button>
   </div>
