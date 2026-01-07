@@ -4,36 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>모두의 2025학년도 교과전형 배치표</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50 text-gray-800">
-  <header class="text-center p-6 bg-white shadow">
-    <h1 class="text-2xl font-bold">모두의 2025학년도 교과전형 배치표</h1>
-    <p class="font-semibold mt-1">Copyright@All Teachers</p>
-    <ul class="text-sm text-gray-600 mt-4">
-      <li>1. 어디가 2025학년도 입시결과 기준 교과전형 배치표(최종등록자 교과등급 70%컷)</li>
-      <li>2. 학과(전형, 모집인원) 표기. 70%컷은 모집인원의 0~70%에 해당하는 등수 성적</li>
-      <li>3. 자신의 희망 대학, 학과의 교과 성적 단순 참고! 수능최저, 경쟁률 등 확인 필요</li>
+  <header class="text-center py-6 bg-white shadow-md">
+    <h1 class="text-2xl font-bold text-blue-700">모두의 2025학년도 교과전형 배치표</h1>
+    <p class="font-semibold mt-1 text-gray-600">Copyright@All Teachers</p>
+    <ul class="text-sm text-gray-600 mt-4 max-w-xl mx-auto text-left">
+      <li>① 어디가 2025학년도 입시결과 기준 교과전형 배치표(최종등록자 교과등급 70%컷)</li>
+      <li>② 학과(전형, 모집인원) 표기. 70%컷은 모집인원의 0~70%에 해당하는 등수 성적</li>
+      <li>③ 자신의 희망 대학, 학과의 교과 성적 단순 참고! 수능최저, 경쟁률 등 확인 필요</li>
     </ul>
   </header>
 
-  <main class="p-4 max-w-6xl mx-auto">
-    <div class="flex flex-wrap gap-2 justify-center mb-4">
-      <select id="sheet-select" class="border p-2 rounded"></select>
-      <select id="univ1" class="border p-2 rounded"></select>
-      <select id="univ2" class="border p-2 rounded"></select>
-      <select id="univ3" class="border p-2 rounded"></select>
-      <button onclick="resetSelection()" class="bg-red-100 text-red-700 px-4 py-2 rounded">초기화</button>
+  <main class="p-4 max-w-7xl mx-auto">
+    <div class="flex flex-wrap gap-2 justify-center mb-6">
+      <select id="sheet-select" class="border p-2 rounded shadow text-sm"></select>
+      <select id="univ1" class="border p-2 rounded shadow text-sm"></select>
+      <select id="univ2" class="border p-2 rounded shadow text-sm"></select>
+      <select id="univ3" class="border p-2 rounded shadow text-sm"></select>
+      <button onclick="resetSelection()" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded shadow">초기화</button>
     </div>
 
-    <div id="table-container" class="overflow-x-auto bg-white shadow rounded-md p-4"></div>
+    <div id="table-container" class="overflow-x-auto bg-white shadow-lg rounded-lg p-4 border border-gray-200"></div>
   </main>
 
   <script>
     let data = {};
 
     async function loadData() {
-      const res = await fetch('./data/gpa_data_ui_ready.json');
+      const res = await fetch('./data/gpa_data_final_clean.json');
       data = await res.json();
       const sheetSelect = document.getElementById('sheet-select');
       Object.keys(data).forEach(sheet => {
@@ -42,10 +42,14 @@
         option.textContent = sheet;
         sheetSelect.appendChild(option);
       });
-      sheetSelect.addEventListener('change', renderTable);
+      sheetSelect.addEventListener('change', () => {
+        populateUniversitySelects();
+        renderTable();
+      });
       ['univ1', 'univ2', 'univ3'].forEach(id => document.getElementById(id).addEventListener('change', renderTable));
       sheetSelect.value = Object.keys(data)[0];
       populateUniversitySelects();
+      renderTable();
     }
 
     function populateUniversitySelects() {
@@ -73,13 +77,19 @@
       const selectedSheet = document.getElementById('sheet-select').value;
       const sheetData = data[selectedSheet];
       const selectedUnivs = ['univ1', 'univ2', 'univ3'].map(id => document.getElementById(id).value).filter(Boolean);
-      let html = '<table class="min-w-full text-sm text-left"><thead><tr><th class="border p-2">70%컷</th>';
+      if (selectedUnivs.length === 0) {
+        document.getElementById('table-container').innerHTML = '<p class="text-center text-gray-500">대학을 선택해주세요.</p>';
+        return;
+      }
+      let html = '<table class="min-w-full text-sm text-center border border-gray-300">';
+      html += '<thead class="bg-blue-100"><tr><th class="border p-2">70%컷</th>';
       selectedUnivs.forEach(univ => html += `<th class="border p-2">${univ}</th>`);
       html += '</tr></thead><tbody>';
-      Object.entries(sheetData).forEach(([score, univData]) => {
-        html += `<tr><td class="border p-2 font-semibold bg-gray-100">${score}</td>`;
+      Object.entries(sheetData).forEach(([score, univData], index) => {
+        const rowColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+        html += `<tr class="${rowColor}"><td class="border p-2 font-medium text-blue-700">${score}</td>`;
         selectedUnivs.forEach(univ => {
-          html += `<td class="border p-2">${univData[univ] || ''}</td>`;
+          html += `<td class="border p-2 text-gray-700">${univData[univ] || ''}</td>`;
         });
         html += '</tr>';
       });
