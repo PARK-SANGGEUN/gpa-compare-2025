@@ -1,126 +1,116 @@
-/* 기본 세팅 */
 body {
-  font-family: 'Segoe UI', '맑은 고딕', sans-serif;
-  background: #f4f6fd;
+  font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
   padding: 0;
-  color: #222;
+  background: #f3f6fd;
+  color: #111827;
 }
 
 .container {
-  padding: 2rem;
-  max-width: 1400px;
+  max-width: 1280px;
   margin: auto;
+  padding: 2rem;
 }
 
 h1 {
+  text-align: center;
   font-size: 2.5rem;
   color: #1e3a8a;
-  text-align: center;
-  font-weight: 900;
-  letter-spacing: -1px;
-  margin-bottom: 0.3rem;
+  font-weight: 800;
 }
 
 .subtitle {
   text-align: center;
-  font-size: 1.1rem;
-  color: #333;
+  font-weight: 600;
   margin-bottom: 1rem;
 }
 
 .instructions {
+  list-style: none;
+  padding-left: 0;
   text-align: center;
   margin-bottom: 1.5rem;
-  line-height: 1.6;
+}
+
+.instructions li {
+  margin-bottom: 0.4rem;
   font-size: 0.95rem;
-  color: #444;
 }
 
 .controls {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  justify-content: center;
+  gap: 10px;
   margin-bottom: 1rem;
 }
 
-select, input[type="text"] {
-  padding: 0.5rem;
-  font-size: 1rem;
+.controls input,
+.controls select,
+.controls button {
+  padding: 0.6rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid #ccc;
-  min-width: 160px;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
 }
 
 button.add {
-  background: #2563eb;
+  background-color: #2563eb;
   color: white;
+  border: none;
 }
 
 button.reset {
-  background: #f87171;
-  color: white;
+  background-color: #fca5a5;
+  color: #7f1d1d;
+  border: none;
 }
 
 button:hover {
-  transform: scale(1.05);
+  opacity: 0.85;
+  cursor: pointer;
 }
 
 .table-wrapper {
   overflow-x: auto;
-  border-radius: 10px;
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
   background: white;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  max-height: 600px;
+  position: relative;
 }
 
-table {
+#gpaTable {
   border-collapse: collapse;
   width: 100%;
-  min-width: 800px;
 }
 
-th, td {
-  padding: 0.8rem;
+#gpaTable th,
+#gpaTable td {
+  border: 1px solid #cbd5e1;
+  padding: 0.6rem;
   text-align: center;
-  border: 1px solid #ddd;
-  font-size: 0.95rem;
-  white-space: nowrap;
+  vertical-align: top;
+  min-width: 150px;
 }
 
-th {
-  background-color: #e2e8f0;
-  font-weight: bold;
+#gpaTable th.fixed-col,
+#gpaTable td.fixed-col {
   position: sticky;
-  top: 0;
+  left: 0;
+  background: #fef3c7;
+  font-weight: bold;
+  color: #78350f;
   z-index: 2;
 }
 
-.fixed-col {
+#gpaTable th {
   position: sticky;
-  left: 0;
-  background-color: #fef3c7 !important;
-  font-weight: bold;
-  color: #7c2d12;
+  top: 0;
+  background: #e0f2fe;
+  font-weight: 700;
   z-index: 1;
-}
-
-.level {
-  font-weight: bold;
-}
-
-.uni-header {
-  font-weight: bold;
-  font-size: 1rem;
 }
 
 .remove {
@@ -130,60 +120,21 @@ th {
 }
 
 .highlight {
-  background-color: yellow;
+  background-color: #fde68a;
   font-weight: bold;
-  padding: 0 2px;
-  border-radius: 3px;
 }
 
-/* 대학별 색상 테마 */
-.color-0 {
-  background-color: #e0f2fe; /* 하늘 */
-}
-.color-1 {
-  background-color: #fde2e2; /* 연핑크 */
-}
-.color-2 {
-  background-color: #ede9fe; /* 연보라 */
-}
-.color-3 {
-  background-color: #d1fae5; /* 민트 */
-}
-.color-4 {
-  background-color: #fff7cd; /* 크림 */
-}
-
-/* 맨 위로 버튼 */
 #scrollTopBtn {
   position: fixed;
-  bottom: 40px;
+  bottom: 20px;
   right: 30px;
-  display: none;
   z-index: 10;
-  background-color: #4b5563;
+  background-color: #2563eb;
   color: white;
+  padding: 0.7rem 1rem;
   border: none;
-  padding: 12px 16px;
   border-radius: 50%;
   font-size: 1.2rem;
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(0,0,0,0.2);
-  transition: background-color 0.3s ease;
-}
-#scrollTopBtn:hover {
-  background-color: #1f2937;
-}
-
-/* 모바일 최적화 */
-@media screen and (max-width: 768px) {
-  .controls {
-    flex-direction: column;
-    align-items: center;
-  }
-  table {
-    font-size: 0.85rem;
-  }
-  th, td {
-    padding: 0.5rem;
-  }
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
 }
