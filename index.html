@@ -4,105 +4,51 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>모두의 2025학년도 교과전형 배치표</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 0.75rem;
+    }
+    th {
+      background-color: #e0f2fe;
+      font-weight: 700;
+    }
+    tr:hover {
+      background-color: #f0f9ff;
+      transition: background-color 0.3s ease;
+    }
+    select:focus {
+      outline: 2px solid #2563eb;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <header class="text-center py-6 bg-white shadow-md">
-    <h1 class="text-2xl font-bold text-blue-700">모두의 2025학년도 교과전형 배치표</h1>
-    <p class="font-semibold mt-1 text-gray-600">Copyright@All Teachers</p>
-    <ul class="text-sm text-gray-600 mt-4 max-w-xl mx-auto text-left">
+<body class="bg-gradient-to-br from-gray-100 to-white text-gray-800 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-6">
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-blue-800 drop-shadow">모두의 2025학년도 교과전형 배치표</h1>
+    <p class="text-center font-semibold mt-2 text-gray-700 text-lg">Copyright@All Teachers</p>
+
+    <ul class="text-sm sm:text-base text-center mt-4 space-y-1 text-gray-600">
       <li>① 어디가 2025학년도 입시결과 기준 교과전형 배치표(최종등록자 교과등급 70%컷)</li>
-      <li>② 학과(전형, 모집인원) 표기, 70% 컷은 모집인원*0.7에 해당하는 등수 성적</li>
+      <li>② 학과(전형, 모집인원) 표기, 70% 컷은 모집인원×0.7에 해당하는 등수 성적</li>
       <li>③ 자신의 희망 대학, 학과의 교과 성적 단순 참고! 수능최저, 경쟁률도 확인 필요</li>
     </ul>
-  </header>
 
-  <main class="p-4 max-w-7xl mx-auto">
-    <div class="flex flex-wrap gap-2 justify-center mb-6">
-      <select id="sheet-select" class="border p-2 rounded shadow text-sm"></select>
-      <select id="univ1" class="border p-2 rounded shadow text-sm"></select>
-      <select id="univ2" class="border p-2 rounded shadow text-sm"></select>
-      <select id="univ3" class="border p-2 rounded shadow text-sm"></select>
-      <button onclick="resetSelection()" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded shadow">초기화</button>
+    <div class="flex flex-wrap justify-center mt-6 gap-3">
+      <select id="sheetSelect" class="border border-blue-200 rounded px-3 py-2 text-sm shadow-sm"></select>
+      <select id="collegeSelect1" class="border border-blue-200 rounded px-3 py-2 text-sm shadow-sm"></select>
+      <select id="collegeSelect2" class="border border-blue-200 rounded px-3 py-2 text-sm shadow-sm"></select>
+      <select id="collegeSelect3" class="border border-blue-200 rounded px-3 py-2 text-sm shadow-sm"></select>
+      <button id="resetBtn" class="bg-red-100 hover:bg-red-200 text-red-600 font-bold px-4 py-2 rounded shadow-sm transition">초기화</button>
     </div>
 
-    <div id="table-container" class="overflow-x-auto bg-white shadow-lg rounded-lg p-4 border border-gray-200"></div>
-  </main>
-
-  <script>
-    let data = {};
-
-    async function loadData() {
-      const res = await fetch('./data/gpa_data_fixed_final.json');
-      data = await res.json();
-      const sheetSelect = document.getElementById('sheet-select');
-      Object.keys(data).forEach(sheet => {
-        const option = document.createElement('option');
-        option.value = sheet;
-        option.textContent = sheet;
-        sheetSelect.appendChild(option);
-      });
-      sheetSelect.addEventListener('change', () => {
-        populateUniversitySelects();
-        renderTable();
-      });
-      ['univ1', 'univ2', 'univ3'].forEach(id => document.getElementById(id).addEventListener('change', renderTable));
-      sheetSelect.value = Object.keys(data)[0];
-      populateUniversitySelects();
-      renderTable();
-    }
-
-    function populateUniversitySelects() {
-      const selectedSheet = document.getElementById('sheet-select').value;
-      const sheetData = data[selectedSheet];
-      const universities = new Set();
-      Object.values(sheetData).forEach(row => {
-        Object.keys(row).forEach(u => universities.add(u));
-      });
-      ['univ1', 'univ2', 'univ3'].forEach(id => {
-        const select = document.getElementById(id);
-        select.innerHTML = '<option value="">대학 선택</option>';
-        universities.forEach(u => {
-          const option = document.createElement('option');
-          option.value = u;
-          option.textContent = u;
-          select.appendChild(option);
-        });
-      });
-    }
-
-    function resetSelection() {
-      ['univ1', 'univ2', 'univ3'].forEach(id => document.getElementById(id).value = "");
-      renderTable();
-    }
-
-    function renderTable() {
-      const selectedSheet = document.getElementById('sheet-select').value;
-      const sheetData = data[selectedSheet];
-      const selectedUnivs = ['univ1', 'univ2', 'univ3'].map(id => document.getElementById(id).value).filter(Boolean);
-      const allUnivs = new Set();
-      Object.values(sheetData).forEach(row => {
-        Object.keys(row).forEach(u => allUnivs.add(u));
-      });
-      const univsToShow = selectedUnivs.length > 0 ? selectedUnivs : [...allUnivs];
-
-      let html = '<table class="min-w-full text-sm text-center border border-gray-300">';
-      html += '<thead class="bg-blue-100"><tr><th class="border p-2">70%컷</th>';
-      univsToShow.forEach(univ => html += `<th class="border p-2">${univ}</th>`);
-      html += '</tr></thead><tbody>';
-      Object.entries(sheetData).forEach(([score, univData], index) => {
-        const rowColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
-        html += `<tr class="${rowColor}"><td class="border p-2 font-medium text-blue-700">${score}</td>`;
-        univsToShow.forEach(univ => {
-          html += `<td class="border p-2 text-gray-700">${univData[univ] || ''}</td>`;
-        });
-        html += '</tr>';
-      });
-      html += '</tbody></table>';
-      document.getElementById('table-container').innerHTML = html;
-    }
-
-    window.onload = loadData;
-  </script>
+    <div id="tableContainer" class="mt-6 overflow-auto border border-gray-200 rounded-lg shadow-lg bg-white">
+      <table id="comparisonTable" class="min-w-full table-auto text-sm text-center">
+        <!-- Table will be dynamically inserted -->
+      </table>
+    </div>
+  </div>
 </body>
 </html>
