@@ -1,115 +1,111 @@
 let jsonData = [];
-let selectedUniversities = [];
+let selectedUniversities = ["경희대", "고려대", "서강대"];
 
 async function loadData() {
   try {
     const response = await fetch('./data/gpa_data_final_single_sheet.json');
     jsonData = await response.json();
-
     populateUniversityDropdown();
-    selectedUniversities = ["경희대", "고려대", "서강대"]; // 기본 표시 대학
     renderTable();
+    initAutocomplete();
   } catch (error) {
-    console.error("데이터를 불러오는 데 실패했습니다:", error);
+    console.error("데이터 불러오기 실패:", error);
   }
 }
 
 function populateUniversityDropdown() {
   const dropdown = document.getElementById('universitySelect');
-  dropdown.innerHTML = '<option value="">대학 선택</option>';
-
-  const headers = Object.keys(jsonData[0]).filter(h => h !== "70%컷");
-  const uniqueUniversities = new Set(headers);
-
-  uniqueUniversities.forEach(univ => {
-    const option = document.createElement('option');
-    option.value = univ;
-    option.textContent = univ;
+  dropdown.innerHTML = `<option value="">대학 선택</option>`;
+  const headers = Object.keys(jsonData[0]).filter(key => key !== "70%컷" && key !== "Unnamed: 0");
+  headers.forEach(uni => {
+    const option = document.createElement("option");
+    option.value = uni;
+    option.textContent = uni;
     dropdown.appendChild(option);
   });
-
-  dropdown.addEventListener('change', (e) => {
-    const value = e.target.value;
-    if (value && !selectedUniversities.includes(value)) {
-      selectedUniversities.push(value);
-      renderTable();
-    }
-  });
-
-  document.getElementById("searchInput").addEventListener("input", renderTable);
 }
 
-function renderTable() {
-  const container = document.getElementById("scrollableTable");
-  const keyword = document.getElementById("searchInput").value.trim();
-
-  let filteredData = [...jsonData];
-
-  if (keyword) {
-    filteredData = jsonData.filter(row =>
-      selectedUniversities.some(univ => row[univ]?.includes(keyword))
-    );
+document.getElementById('addCompare').addEventListener('click', () => {
+  const selected = document.getElementById('universitySelect').value;
+  if (selected && !selectedUniversities.includes(selected)) {
+    selectedUniversities.push(selected);
+    renderTable();
   }
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  selectedUniversities = [];
+  document.getElementById('searchInput').value = "";
+  renderTable();
+});
+
+function renderTable() {
+  const container = document.getElementById('tableContainer');
+  const keyword = document.getElementById('searchInput').value.toLowerCase();
 
   if (selectedUniversities.length === 0) {
-    container.innerHTML = '<div class="text-gray-500 text-center mt-4">대학을 선택해주세요.</div>';
+    container.innerHTML = `<div class="no-selection">대학을 선택해주세요.</div>`;
     return;
   }
 
-  let tableHTML = `<table><thead><tr>`;
-  tableHTML += `<th class="sticky sticky-top">70%컷</th>`;
-
-  selectedUniversities.forEach((univ, idx) => {
-    tableHTML += `<th class="sticky-top">${univ} <button onclick="removeUniversity('${univ}')">❌</button></th>`;
+  let html = '<table><thead><tr>';
+  html += `<th class="sticky-col header-cell">70%컷</th>`;
+  selectedUniversities.forEach((uni, idx) => {
+    html += `<th class="header-cell color-${idx % 5}">${uni} <span class="remove-btn" onclick="removeUniversity('${uni}')">×</span></th>`;
   });
+  html += '</tr></thead><tbody>';
 
-  tableHTML += `</tr></thead><tbody>`;
+  jsonData.forEach(row => {
+    const showRow = Object.values(row).some(val => val?.toLowerCase().includes(keyword));
+    if (!showRow) return;
 
-  filteredData.forEach(row => {
-    tableHTML += `<tr>`;
-    tableHTML += `<td class="sticky">${row["70%컷"] || ""}</td>`;
-
-    selectedUniversities.forEach((univ, i) => {
-      const val = row[univ] || "";
-      const highlight = keyword && val.includes(keyword) ? 'highlight' : '';
-      tableHTML += `<td class="color-${i % 4} ${highlight}">${val}</td>`;
+    html += `<tr><td class="sticky-col">${row["70%컷"] || ""}</td>`;
+    selectedUniversities.forEach((uni, idx) => {
+      const val = row[uni] || "";
+      const highlight = val.toLowerCase().includes(keyword) ? "highlight" : "";
+      html += `<td class="color-${idx % 5} ${highlight}">${val}</td>`;
     });
-
-    tableHTML += `</tr>`;
+    html += "</tr>";
   });
 
-  tableHTML += `</tbody></table>`;
-  container.innerHTML = tableHTML;
-
-  updateSelectedDisplay();
+  html += "</tbody></table>";
+  container.innerHTML = html;
 }
 
-function updateSelectedDisplay() {
-  const div = document.getElementById("selectedUniversities");
-  div.innerHTML = `선택한 대학: ${selectedUniversities.join(", ")}`;
-}
-
-function resetSelection() {
-  selectedUniversities = [];
-  document.getElementById("universitySelect").value = "";
-  document.getElementById("searchInput").value = "";
+function removeUniversity(uni) {
+  selectedUniversities = selectedUniversities.filter(u => u !== uni);
   renderTable();
 }
 
-function removeUniversity(univ) {
-  selectedUniversities = selectedUniversities.filter(u => u !== univ);
-  renderTable();
-}
+document.getElementById("searchInput").addEventListener("input", renderTable);
 
-document.getElementById("reset").addEventListener("click", resetSelection);
+function initAutocomplete() {
+  const input = document.getElementById("searchInput");
+  const list = document.getElementById("autocomplete-list");
+  const keywords = [...new Set(jsonData.flatMap(row => Object.values(row).filter(v => typeof v === "string")))];
+
+  input.addEventListener("input", function () {
+    const val = this.value;
+    list.innerHTML = "";
+    if (!val) return;
+
+    const filtered = keywords.filter(k => k.toLowerCase().includes(val.toLowerCase())).slice(0, 10);
+    filtered.forEach(match => {
+      const item = document.createElement("div");
+      item.classList.add("autocomplete-item");
+      item.textContent = match;
+      item.addEventListener("click", () => {
+        input.value = match;
+        list.innerHTML = "";
+        renderTable();
+      });
+      list.appendChild(item);
+    });
+  });
+}
 
 document.getElementById("scrollTopBtn").addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
-
-window.onscroll = function () {
-  const btn = document.getElementById("scrollTopBtn");
-  btn.style.display = document.documentElement.scrollTop > 200 ? "block" : "none";
-};
 
 document.addEventListener("DOMContentLoaded", loadData);
