@@ -12,8 +12,8 @@
     <p class="font-semibold mt-1 text-gray-600">Copyright@All Teachers</p>
     <ul class="text-sm text-gray-600 mt-4 max-w-xl mx-auto text-left">
       <li>① 어디가 2025학년도 입시결과 기준 교과전형 배치표(최종등록자 교과등급 70%컷)</li>
-      <li>② 학과(전형, 모집인원) 표기. 70%컷은 모집인원의 0~70%에 해당하는 등수 성적</li>
-      <li>③ 자신의 희망 대학, 학과의 교과 성적 단순 참고! 수능최저, 경쟁률 등 확인 필요</li>
+      <li>② 학과(전형, 모집인원) 표기, 70% 컷은 모집인원*0.7에 해당하는 등수 성적</li>
+      <li>③ 자신의 희망 대학, 학과의 교과 성적 단순 참고! 수능최저, 경쟁률도 확인 필요</li>
     </ul>
   </header>
 
@@ -33,7 +33,7 @@
     let data = {};
 
     async function loadData() {
-      const res = await fetch('./data/gpa_data_final_clean.json');
+      const res = await fetch('./data/gpa_data_fixed_final.json');
       data = await res.json();
       const sheetSelect = document.getElementById('sheet-select');
       Object.keys(data).forEach(sheet => {
@@ -54,8 +54,11 @@
 
     function populateUniversitySelects() {
       const selectedSheet = document.getElementById('sheet-select').value;
-      const firstScore = Object.keys(data[selectedSheet])[0];
-      const universities = Object.keys(data[selectedSheet][firstScore]);
+      const sheetData = data[selectedSheet];
+      const universities = new Set();
+      Object.values(sheetData).forEach(row => {
+        Object.keys(row).forEach(u => universities.add(u));
+      });
       ['univ1', 'univ2', 'univ3'].forEach(id => {
         const select = document.getElementById(id);
         select.innerHTML = '<option value="">대학 선택</option>';
@@ -77,18 +80,20 @@
       const selectedSheet = document.getElementById('sheet-select').value;
       const sheetData = data[selectedSheet];
       const selectedUnivs = ['univ1', 'univ2', 'univ3'].map(id => document.getElementById(id).value).filter(Boolean);
-      if (selectedUnivs.length === 0) {
-        document.getElementById('table-container').innerHTML = '<p class="text-center text-gray-500">대학을 선택해주세요.</p>';
-        return;
-      }
+      const allUnivs = new Set();
+      Object.values(sheetData).forEach(row => {
+        Object.keys(row).forEach(u => allUnivs.add(u));
+      });
+      const univsToShow = selectedUnivs.length > 0 ? selectedUnivs : [...allUnivs];
+
       let html = '<table class="min-w-full text-sm text-center border border-gray-300">';
       html += '<thead class="bg-blue-100"><tr><th class="border p-2">70%컷</th>';
-      selectedUnivs.forEach(univ => html += `<th class="border p-2">${univ}</th>`);
+      univsToShow.forEach(univ => html += `<th class="border p-2">${univ}</th>`);
       html += '</tr></thead><tbody>';
       Object.entries(sheetData).forEach(([score, univData], index) => {
         const rowColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
         html += `<tr class="${rowColor}"><td class="border p-2 font-medium text-blue-700">${score}</td>`;
-        selectedUnivs.forEach(univ => {
+        univsToShow.forEach(univ => {
           html += `<td class="border p-2 text-gray-700">${univData[univ] || ''}</td>`;
         });
         html += '</tr>';
