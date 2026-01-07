@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>모두의 2025 교과전형 배치표</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -10,6 +10,7 @@
   <div class="container">
     <h1 class="main-title">모두의 2025학년도 교과전형 배치표</h1>
     <p class="subtitle">Copyright@ All Teachers</p>
+
     <ul class="instructions">
       <li>① 어디가 2025학년도 입시결과 기준 교과전형 배치표 (최종등록자 교과등급 70%컷)</li>
       <li>② 학과(전형, 모집인원) 표기, 70% 컷은 모집인원×0.7에 해당하는 등수 성적</li>
@@ -18,13 +19,15 @@
 
     <div class="controls">
       <input type="text" id="searchInput" placeholder="학과명, 전형 검색..." />
-      <select id="universitySelect" class="university-select"></select>
-      <button id="addCompare" class="btn add">+ 비교 추가</button>
-      <button id="reset" class="btn reset">초기화</button>
+      <select id="universitySelect"></select>
+      <button id="addCompare" class="add">+ 비교 추가</button>
+      <button id="reset" class="reset">초기화</button>
     </div>
 
+    <div id="selectedUniversities" class="selected-universities"></div>
+
     <div id="tableContainer" class="table-wrapper">
-      <!-- 동적 테이블 렌더링 -->
+      <div id="scrollableTable" class="scrollable-table"></div>
     </div>
 
     <button id="scrollTopBtn" title="맨 위로">▲</button>
