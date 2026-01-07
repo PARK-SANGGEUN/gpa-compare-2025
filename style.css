@@ -1,59 +1,55 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, #f3f7ff, #e6ecff);
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #f4f7ff;
   margin: 0;
   padding: 0;
-  color: #111;
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
   padding: 20px;
 }
 
 .main-title {
-  font-size: 2.4rem;
-  font-weight: 800;
-  color: #0b2c71;
   text-align: center;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  font-size: 2.5rem;
+  color: #102a63;
+  font-weight: bold;
+  margin-top: 20px;
 }
 
 .subtitle {
   text-align: center;
-  color: #333;
-  font-weight: 600;
+  font-weight: bold;
   margin-bottom: 10px;
 }
 
 .instructions {
-  list-style-type: disc;
   margin-bottom: 20px;
-  padding-left: 20px;
 }
 
 .controls {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
-  justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-input[type="text"], select {
+input[type="text"],
+select {
   padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
   border-radius: 6px;
-  min-width: 180px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
 button.add {
-  background-color: #1d4ed8;
+  background-color: #2563eb;
   color: white;
   border: none;
-  padding: 8px 14px;
+  padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
 }
@@ -62,13 +58,9 @@ button.reset {
   background-color: #f87171;
   color: white;
   border: none;
-  padding: 8px 14px;
+  padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-}
-
-button.add:hover, button.reset:hover {
-  opacity: 0.9;
 }
 
 .table-wrapper {
@@ -76,23 +68,30 @@ button.add:hover, button.reset:hover {
 }
 
 table {
-  width: 100%;
   border-collapse: collapse;
+  width: 100%;
+  min-width: 600px;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ccc;
-  padding: 8px;
+  padding: 10px;
   text-align: center;
 }
 
-th {
+th.sticky-col,
+td.sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: #fffbe6;
+  z-index: 1;
   font-weight: bold;
 }
 
 .bg-yellow {
-  background-color: #fff4cc;
-  color: #7a4e00;
+  background-color: #fff8cc;
+  color: #7a3e00;
 }
 
 .text-bold {
@@ -100,29 +99,45 @@ th {
 }
 
 .highlight {
-  background-color: #fef3c7;
-  font-weight: bold;
+  background-color: #ffe0e0;
 }
 
-.bg-color-0 { background-color: #e0f2fe; }
-.bg-color-1 { background-color: #fce7f3; }
-.bg-color-2 { background-color: #ede9fe; }
-.bg-color-3 { background-color: #dcfce7; }
+.bg-color-0 {
+  background-color: #e0f2ff;
+}
+.bg-color-1 {
+  background-color: #ffe0f0;
+}
+.bg-color-2 {
+  background-color: #eee0ff;
+}
+.bg-color-3 {
+  background-color: #e0ffe7;
+}
+.bg-color-4 {
+  background-color: #fff0cc;
+}
+
+.remove {
+  color: red;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-left: 6px;
+}
 
 #scrollTopBtn {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  padding: 10px 15px;
-  background-color: #4b5563;
+  bottom: 20px;
+  right: 20px;
+  background-color: #3b82f6;
   color: white;
   border: none;
   border-radius: 50%;
+  width: 40px;
+  height: 40px;
   font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  display: none;
-}
-
-#scrollTopBtn.show {
-  display: block;
 }
