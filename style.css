@@ -1,182 +1,95 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: linear-gradient(to bottom, #f0f4f8, #ffffff);
-  color: #333;
-  margin: 0;
-  padding: 0;
+  background: linear-gradient(to bottom, #eef2ff, #ffffff);
 }
 
-/* 제목 */
-h1 {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: #1e3a8a;
-  margin-top: 2rem;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
-
-p {
-  text-align: center;
-  color: #555;
-  font-weight: 600;
-  margin-top: 0.5rem;
-}
-
-ul {
-  text-align: center;
-  color: #444;
-  font-size: 0.95rem;
-  margin-top: 1rem;
-  list-style: none;
-  padding: 0;
-}
-
-/* 드롭다운과 버튼 영역 */
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-
-select, input[type="text"] {
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  border: 1px solid #ccc;
-  font-size: 0.95rem;
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-button {
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-#addCompareBtn {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-}
-
-#addCompareBtn:hover {
-  background-color: #2563eb;
-}
-
-#resetBtn {
-  background-color: #fee2e2;
-  color: #dc2626;
-  border: none;
-}
-
-#resetBtn:hover {
-  background-color: #fecaca;
-}
-
-/* 테이블 영역 */
-#tableContainer {
-  overflow-x: auto;
-  margin: 2rem auto;
-  max-width: 95%;
-  border-radius: 0.75rem;
-  background: white;
-  padding: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
+/* 테이블 */
 table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  table-layout: fixed;
 }
 
+th, td {
+  border: 1px solid #cbd5e1;
+  padding: 10px;
+  text-align: center;
+  font-weight: 600;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* 헤더 고정 */
 thead th {
   position: sticky;
   top: 0;
-  background-color: #f0f9ff;
-  color: #1e3a8a;
-  font-weight: bold;
-  font-size: 0.95rem;
-  padding: 0.75rem;
-  z-index: 10;
-  border-bottom: 2px solid #dbeafe;
-  text-align: center;
+  background: #dbeafe;
+  z-index: 20;
+  font-size: 1rem;
+  color: #0f172a;
 }
 
-td {
-  padding: 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
-  border-right: 1px solid #f3f4f6;
-  text-align: center;
-  font-size: 0.9rem;
-  vertical-align: top;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-tr:hover {
-  background-color: #f9fafb;
-  transition: background-color 0.2s ease;
-}
-
-/* 첫 번째 열 70%컷 */
-.cut-column {
-  background-color: #e0f2fe;
-  color: #1d4ed8;
-  font-weight: 700;
-  min-width: 80px;
-  border-right: 2px solid #bae6fd;
+/* 70%컷 고정 */
+th:first-child,
+td:first-child {
   position: sticky;
   left: 0;
-  z-index: 5;
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 800;
+  z-index: 15;
 }
 
-/* 선택된 열 구분 스타일 */
-.highlighted {
-  background-color: #ffffff;
-  font-weight: 500;
+/* hover 효과 */
+tr:hover td {
+  background-color: #f8fafc;
 }
 
-.divider {
-  border-left: 1px solid #e0e0e0;
+/* 컬럼별 색상 */
+td[data-color="0"], th[data-color="0"] { background:#e0f2fe; }
+td[data-color="1"], th[data-color="1"] { background:#fce7f3; }
+td[data-color="2"], th[data-color="2"] { background:#ede9fe; }
+td[data-color="3"], th[data-color="3"] { background:#dcfce7; }
+td[data-color="4"], th[data-color="4"] { background:#fff7ed; }
+
+th[data-color], td[data-color] {
+  font-weight: 600;
+  color: #1f2937;
 }
 
-/* 삭제 버튼 (✕) */
+/* 삭제 버튼 */
 .delete-btn {
-  font-size: 0.9rem;
-  top: 0.25rem;
-  right: 0.5rem;
   color: #dc2626;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .delete-btn:hover {
-  color: #b91c1c;
+  color: #991b1b;
+  transform: scale(1.2);
+}
+
+/* 검색 강조 */
+mark {
+  background-color: #fef08a;
+  color: #1e293b;
+  font-weight: 900;
+  padding: 0 3px;
+  border-radius: 4px;
+}
+
+/* 상단 이동 버튼 */
+#scrollTopBtn {
+  z-index: 50;
 }
 
 /* 반응형 */
-@media screen and (max-width: 768px) {
-  h1 {
-    font-size: 1.75rem;
+@media (max-width: 768px) {
+  th, td {
+    font-size: 0.85rem;
+    padding: 0.5rem;
   }
 
-  .controls {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  select, input[type="text"], button {
-    width: 90%;
-    font-size: 1rem;
-  }
-
-  td {
+  input, select, button {
     font-size: 0.85rem;
   }
 }
