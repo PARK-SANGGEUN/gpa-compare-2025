@@ -5,143 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>모두의 2025 교과전형 배치표</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #f0f4fa;
-      margin: 0;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 30px 20px;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: #102b63;
-      text-align: center;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
-
-    ul.instructions {
-      list-style: none;
-      padding-left: 0;
-      margin-bottom: 2rem;
-    }
-
-    ul.instructions li::before {
-      content: '\2022';
-      color: #102b63;
-      display: inline-block;
-      width: 1em;
-      margin-left: -1em;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    input, select, button {
-      padding: 8px;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    button.add {
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      font-weight: bold;
-    }
-
-    button.reset {
-      background-color: #f87171;
-      color: white;
-      border: none;
-      font-weight: bold;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-      border: 2px solid #ccc;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    thead th {
-      position: sticky;
-      top: 0;
-      background-color: #e8f0fe;
-      font-weight: bold;
-      z-index: 1;
-    }
-
-    .highlight {
-      background-color: #ffe2f0;
-      font-weight: bold;
-    }
-
-    .fixed-col {
-      background-color: #fff8cc;
-      font-weight: bold;
-    }
-
-    .header-cell {
-      background-color: #dbeafe;
-      font-weight: bold;
-    }
-
-    .remove-btn {
-      color: red;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .thick-border {
-      border-right: 3px solid #000;
-    }
-
-    #scrollTopBtn {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      padding: 12px;
-      cursor: pointer;
-      font-size: 20px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-  </style>
 </head>
 <body>
   <div class="container">
-    <h1>모두의 2025학년도 교과전형 배치표</h1>
+    <h1 class="main-title">모두의 2025학년도 교과전형 배치표</h1>
     <p class="subtitle">Copyright@ All Teachers</p>
     <ul class="instructions">
       <li>① 어디가 2025학년도 입시결과 기준 교과전형 배치표 (최종등록자 교과등급 70%컷)</li>
@@ -151,12 +18,14 @@
 
     <div class="controls">
       <input type="text" id="searchInput" placeholder="학과명, 전형 검색..." />
-      <select id="universitySelect"></select>
-      <button id="addCompare" class="add">+ 비교 추가</button>
-      <button id="reset" class="reset">초기화</button>
+      <select id="universitySelect" class="university-select"></select>
+      <button id="addCompare" class="btn add">+ 비교 추가</button>
+      <button id="reset" class="btn reset">초기화</button>
     </div>
 
-    <div id="table-container" class="table-wrapper"></div>
+    <div id="tableContainer" class="table-wrapper">
+      <!-- 동적 테이블 렌더링 -->
+    </div>
 
     <button id="scrollTopBtn" title="맨 위로">▲</button>
   </div>
