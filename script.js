@@ -3,14 +3,8 @@ let selectedUniversities = [];
 
 async function loadData() {
     try {
-        const response = await fetch('./data/gpa_data_통합통일_final.json');
+        const response = await fetch('./data/gpa_data_final.json');
         jsonData = await response.json();
-
-        if (!Array.isArray(jsonData) || jsonData.length === 0) {
-            console.error("불러온 데이터가 비어있거나 형식이 잘못되었습니다.");
-            return;
-        }
-
         populateUniversityDropdown();
         renderTable();
     } catch (error) {
@@ -19,7 +13,7 @@ async function loadData() {
 }
 
 function populateUniversityDropdown() {
-    const dropdown = document.querySelector('.university-select');
+    const dropdown = document.getElementById("universitySelect");
     const headers = Object.keys(jsonData[0]).filter(h => h !== "70%컷" && h !== "Unnamed: 0");
 
     dropdown.innerHTML = '<option value="">대학 선택</option>';
@@ -29,18 +23,16 @@ function populateUniversityDropdown() {
         option.textContent = header;
         dropdown.appendChild(option);
     });
-
-    dropdown.addEventListener('change', (e) => {
-        const value = e.target.value;
-        if (value && !selectedUniversities.includes(value)) {
-            selectedUniversities.push(value);
-            renderTable();
-        }
-    });
-
-    const searchInput = document.getElementById("searchInput");
-    searchInput.addEventListener("input", renderTable);
 }
+
+document.getElementById("addCompare").addEventListener("click", () => {
+    const select = document.getElementById("universitySelect");
+    const selected = select.value;
+    if (selected && !selectedUniversities.includes(selected)) {
+        selectedUniversities.push(selected);
+        renderTable();
+    }
+});
 
 function renderTable() {
     const tableContainer = document.getElementById('table-container');
@@ -51,20 +43,20 @@ function renderTable() {
         return;
     }
 
-    let tableHTML = '<table class="min-w-full border border-gray-300 shadow-md"><thead><tr>';
-    tableHTML += '<th class="sticky-col bg-yellow text-center border p-2">70%컷</th>';
-    selectedUniversities.forEach((uni, index) => {
-        tableHTML += `<th class="bg-color-${index % 5} text-center border p-2">${uni} <span class="remove" onclick="removeUniversity('${uni}')">✕</span></th>`;
+    let tableHTML = '<table><thead><tr>';
+    tableHTML += '<th class="bg-yellow">70%컷</th>';
+    selectedUniversities.forEach((uni) => {
+        tableHTML += `<th>${uni}</th>`;
     });
     tableHTML += '</tr></thead><tbody>';
 
     jsonData.forEach(row => {
         tableHTML += '<tr>';
-        tableHTML += `<td class="sticky-col border p-2 text-center bg-yellow text-bold">${row["70%컷"] || ''}</td>`;
-        selectedUniversities.forEach((uni, index) => {
+        tableHTML += `<td class="bg-yellow">${row["70%컷"] || ''}</td>`;
+        selectedUniversities.forEach((uni) => {
             const value = row[uni] || '';
             const highlight = searchKeyword && value.includes(searchKeyword) ? 'highlight' : '';
-            tableHTML += `<td class="border p-2 ${highlight}">${value}</td>`;
+            tableHTML += `<td class="${highlight}">${value}</td>`;
         });
         tableHTML += '</tr>';
     });
@@ -73,22 +65,24 @@ function renderTable() {
     tableContainer.innerHTML = tableHTML;
 }
 
-function removeUniversity(uni) {
-    selectedUniversities = selectedUniversities.filter(u => u !== uni);
-    renderTable();
-}
-
 function resetSelection() {
     selectedUniversities = [];
-    document.querySelector('.university-select').value = "";
+    document.getElementById("universitySelect").value = "";
     document.getElementById("searchInput").value = "";
     renderTable();
 }
 
-document.getElementById('reset').addEventListener('click', resetSelection);
+document.getElementById("reset").addEventListener("click", resetSelection);
+
+document.getElementById("searchInput").addEventListener("input", renderTable);
 
 document.getElementById("scrollTopBtn").addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-document.addEventListener('DOMContentLoaded', loadData);
+window.addEventListener("scroll", () => {
+    document.getElementById("scrollTopBtn").style.display =
+        window.scrollY > 200 ? "block" : "none";
+});
+
+document.addEventListener("DOMContentLoaded", loadData);
