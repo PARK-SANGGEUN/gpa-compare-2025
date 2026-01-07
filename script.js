@@ -1,7 +1,3 @@
-from pathlib import Path
-
-# 경로 지정
-script_js_code = """
 let jsonData = [];
 let selectedUniversities = [];
 
@@ -9,82 +5,97 @@ async function loadData() {
     try {
         const response = await fetch('./data/gpa_data_final_web_ready.json');
         jsonData = await response.json();
-        populateUniversityDropdown();
-        renderTable(); // 최초 전체 테이블
+
+        populateDropdowns();
+        renderTable();  // 최초 전체 테이블 출력
     } catch (error) {
-        console.error("데이터를 불러오는 데 실패했습니다:", error);
+        console.error("데이터 로딩 실패:", error);
     }
 }
 
-function populateUniversityDropdown() {
-    const dropdowns = document.querySelectorAll('.university-select');
-    if (!jsonData.length) return;
+function populateDropdowns() {
+    const dropdowns = [document.getElementById('collegeSelect1'), document.getElementById('collegeSelect2'), document.getElementById('collegeSelect3')];
 
-    const headers = Object.keys(jsonData[0]).filter(h => h !== "70%컷");
+    // 대학 리스트는 8행부터 시작하는 키들 (제공된 JSON 기준)
+    const universityNames = Object.keys(jsonData[0]).filter(col => col !== "70%컷");
 
     dropdowns.forEach(dropdown => {
         dropdown.innerHTML = '<option value="">대학 선택</option>';
-        headers.forEach(header => {
+        universityNames.forEach(name => {
             const option = document.createElement('option');
-            option.value = header;
-            option.textContent = header;
+            option.value = name;
+            option.textContent = name;
             dropdown.appendChild(option);
         });
 
-        dropdown.addEventListener('change', (e) => {
-            const value = e.target.value;
-            if (value && !selectedUniversities.includes(value)) {
-                selectedUniversities.push(value);
-                renderTable();
-            }
+        dropdown.addEventListener('change', () => {
+            selectedUniversities = dropdowns.map(d => d.value).filter(v => v);
+            renderTable();
         });
+    });
+
+    // 초기화 버튼 기능
+    const resetBtn = document.getElementById('resetBtn');
+    resetBtn.addEventListener('click', () => {
+        selectedUniversities = [];
+        dropdowns.forEach(d => d.value = "");
+        renderTable();
     });
 }
 
 function renderTable() {
     const table = document.getElementById('comparisonTable');
-    if (!table) return;
+    table.innerHTML = '';
+
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+
+    const thBase = document.createElement('th');
+    thBase.textContent = '70%컷';
+    thBase.className = 'bg-blue-100 border px-2 py-2 text-sm font-semibold';
+    headerRow.appendChild(thBase);
+
+    let columns = [];
 
     if (selectedUniversities.length === 0) {
-        // 전체 테이블 표시
-        const headers = Object.keys(jsonData[0]);
-        table.innerHTML = '<thead><tr>' +
-            headers.map(h => `<th class="bg-blue-100 text-sm p-2">${h}</th>`).join('') +
-            '</tr></thead><tbody>' +
-            jsonData.map(row => {
-                return '<tr class="hover:bg-gray-50">' +
-                    headers.map(h => `<td class="border text-xs p-2 whitespace-pre-line">${row[h] || ''}</td>`).join('') +
-                    '</tr>';
-            }).join('') + '</tbody>';
-        return;
+        // 전체 출력
+        columns = Object.keys(jsonData[0]).filter(key => key !== "70%컷");
+    } else {
+        columns = selectedUniversities;
     }
 
-    // 선택된 대학 필터 테이블
-    table.innerHTML = '<thead><tr>' +
-        ['70%컷', ...selectedUniversities].map(h => `<th class="bg-blue-100 text-sm p-2">${h}</th>`).join('') +
-        '</tr></thead><tbody>' +
-        jsonData.map(row => {
-            return '<tr class="hover:bg-gray-50">' +
-                ['70%컷', ...selectedUniversities].map(h => `<td class="border text-xs p-2 whitespace-pre-line">${row[h] || ''}</td>`).join('') +
-                '</tr>';
-        }).join('') + '</tbody>';
+    columns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        th.className = 'bg-blue-100 border px-2 py-2 text-sm font-semibold';
+        headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+
+    jsonData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-50 transition';
+
+        const tdBase = document.createElement('td');
+        tdBase.textContent = row["70%컷"] || '';
+        tdBase.className = 'border px-2 py-1 text-center text-xs text-blue-700';
+        tr.appendChild(tdBase);
+
+        columns.forEach(col => {
+            const td = document.createElement('td');
+            td.textContent = row[col] || '';
+            td.className = 'border px-2 py-1 whitespace-pre-line text-sm text-gray-800';
+            tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
 }
 
-function resetSelection() {
-    selectedUniversities = [];
-    const dropdowns = document.querySelectorAll('.university-select');
-    dropdowns.forEach(dropdown => dropdown.value = "");
-    renderTable();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    document.getElementById('resetBtn').addEventListener('click', resetSelection);
-});
-"""
-
-# 저장
-script_path = Path("/mnt/data/script.js")
-script_path.write_text(script_js_code, encoding='utf-8')
-
-script_path.name  # 파일명 반환
+document.addEventListener('DOMContentLoaded', loadData);
