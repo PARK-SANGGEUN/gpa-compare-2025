@@ -5,6 +5,12 @@ async function loadData() {
     try {
         const response = await fetch('./data/gpa_data_통합통일_final.json');
         jsonData = await response.json();
+
+        if (!Array.isArray(jsonData) || jsonData.length === 0) {
+            console.error("불러온 데이터가 비어있거나 형식이 잘못되었습니다.");
+            return;
+        }
+
         populateUniversityDropdown();
         renderTable();
     } catch (error) {
@@ -13,25 +19,23 @@ async function loadData() {
 }
 
 function populateUniversityDropdown() {
-    const dropdowns = document.querySelectorAll('.university-select');
+    const dropdown = document.querySelector('.university-select');
     const headers = Object.keys(jsonData[0]).filter(h => h !== "70%컷" && h !== "Unnamed: 0");
 
-    dropdowns.forEach(dropdown => {
-        dropdown.innerHTML = '<option value="">대학 선택</option>';
-        headers.forEach(header => {
-            const option = document.createElement('option');
-            option.value = header;
-            option.textContent = header;
-            dropdown.appendChild(option);
-        });
+    dropdown.innerHTML = '<option value="">대학 선택</option>';
+    headers.forEach(header => {
+        const option = document.createElement('option');
+        option.value = header;
+        option.textContent = header;
+        dropdown.appendChild(option);
+    });
 
-        dropdown.addEventListener('change', (e) => {
-            const value = e.target.value;
-            if (value && !selectedUniversities.includes(value)) {
-                selectedUniversities.push(value);
-                renderTable();
-            }
-        });
+    dropdown.addEventListener('change', (e) => {
+        const value = e.target.value;
+        if (value && !selectedUniversities.includes(value)) {
+            selectedUniversities.push(value);
+            renderTable();
+        }
     });
 
     const searchInput = document.getElementById("searchInput");
@@ -48,15 +52,15 @@ function renderTable() {
     }
 
     let tableHTML = '<table class="min-w-full border border-gray-300 shadow-md"><thead><tr>';
-    tableHTML += '<th class="bg-yellow text-center border p-2">70%컷</th>';
+    tableHTML += '<th class="sticky-col bg-yellow text-center border p-2">70%컷</th>';
     selectedUniversities.forEach((uni, index) => {
-        tableHTML += `<th class="bg-color-${index} text-center border p-2">${uni}</th>`;
+        tableHTML += `<th class="bg-color-${index % 5} text-center border p-2">${uni} <span class="remove" onclick="removeUniversity('${uni}')">✕</span></th>`;
     });
     tableHTML += '</tr></thead><tbody>';
 
     jsonData.forEach(row => {
         tableHTML += '<tr>';
-        tableHTML += `<td class="border p-2 text-center bg-yellow text-bold">${row["70%컷"] || ''}</td>`;
+        tableHTML += `<td class="sticky-col border p-2 text-center bg-yellow text-bold">${row["70%컷"] || ''}</td>`;
         selectedUniversities.forEach((uni, index) => {
             const value = row[uni] || '';
             const highlight = searchKeyword && value.includes(searchKeyword) ? 'highlight' : '';
@@ -69,10 +73,14 @@ function renderTable() {
     tableContainer.innerHTML = tableHTML;
 }
 
+function removeUniversity(uni) {
+    selectedUniversities = selectedUniversities.filter(u => u !== uni);
+    renderTable();
+}
+
 function resetSelection() {
     selectedUniversities = [];
-    const dropdowns = document.querySelectorAll('.university-select');
-    dropdowns.forEach(dropdown => dropdown.value = "");
+    document.querySelector('.university-select').value = "";
     document.getElementById("searchInput").value = "";
     renderTable();
 }
