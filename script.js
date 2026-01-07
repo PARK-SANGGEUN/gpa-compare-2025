@@ -1,134 +1,110 @@
-const dataFiles = [
-  './data/gpa_data_경고서서성연중한_web_final.json',
-  './data/gpa_data_건국단서세숭이홍_web_final.json',
-  './data/gpa_data_가가광명상아인인_web_final.json'
-];
-
-let fullData = [];
-let universityNames = new Set();
+let allData = {};
 let selectedUniversities = [];
+let currentSheet = '';
+let gpaLevels = [];
 
-/* ---------------- 데이터 로드 ---------------- */
-async function loadAll() {
-  const responses = await Promise.all(
-    dataFiles.map(f => fetch(f).then(r => r.json()))
-  );
-  fullData = responses.flat();
-
-  fullData.forEach(row => {
-    Object.keys(row).forEach(k => {
-      if (k !== "70%컷" && k.trim()) universityNames.add(k);
-    });
-  });
-
-  populateDropdown();
-  renderTable();
-}
-
-/* ---------------- 드롭다운 ---------------- */
-function populateDropdown() {
-  const select = document.getElementById("collegeSelect");
-  select.innerHTML = `<option value="">대학 선택</option>`;
-
-  [...universityNames].sort().forEach(name => {
-    const op = document.createElement("option");
-    op.value = op.textContent = name;
-    select.appendChild(op);
-  });
-
-  select.onchange = () => {
-    const v = select.value;
-    if (!v || selectedUniversities.includes(v)) return;
-    if (selectedUniversities.length >= 5) {
-      alert("최대 5개 대학까지 비교 가능합니다.");
-      return;
-    }
-    selectedUniversities.push(v);
+async function loadData() {
+  try {
+    const response = await fetch('data/gpa_data_통합_final.json');
+    allData = await response.json();
+    const sheets = Object.keys(allData);
+    currentSheet = sheets[0];
+    gpaLevels = Object.keys(allData[currentSheet]);
+    populateUniversitySelect();
     renderTable();
-    select.value = "";
-  };
+  } catch (error) {
+    console.error('데이터 불러오기 실패:', error);
+  }
 }
 
-/* ---------------- 삭제 ---------------- */
-function removeUni(name) {
-  selectedUniversities = selectedUniversities.filter(u => u !== name);
-  renderTable();
+function populateUniversitySelect() {
+  const select = document.getElementById('universitySelect');
+  select.innerHTML = '<option value="">대학 선택</option>';
+  const universities = new Set();
+  Object.values(allData).forEach(sheet =>
+    Object.values(sheet).forEach(row =>
+      Object.keys(row).forEach(u => universities.add(u))
+    )
+  );
+  [...universities].sort().forEach(uni => {
+    const option = document.createElement('option');
+    option.value = uni;
+    option.textContent = uni;
+    select.appendChild(option);
+  });
 }
 
-/* ---------------- 검색 ---------------- */
-function matchesSearch(text) {
-  const q = document.getElementById("searchInput").value.trim();
-  if (!q) return true;
-  return (text || "").toLowerCase().includes(q.toLowerCase());
-}
-
-function highlightKeyword(text) {
-  const q = document.getElementById("searchInput").value.trim();
-  if (!q || !text) return text;
-  const regex = new RegExp(`(${q})`, "gi");
-  return text.replace(regex, "<mark>$1</mark>");
-}
-
-/* ---------------- 테이블 렌더 ---------------- */
 function renderTable() {
-  const box = document.getElementById("tableContainer");
-
-  if (selectedUniversities.length === 0) {
-    selectedUniversities = [...universityNames].slice(0, 3);
-  }
-
-  let html = `<table><thead><tr><th>70%컷</th>`;
-
-  selectedUniversities.forEach((u, i) => {
-    html += `<th data-color="${i % 5}">${u} <span class="delete-btn" onclick="removeUni('${u}')">✕</span></th>`;
+  const table = document.getElementById('gpaTable');
+  table.innerHTML = '';
+  const header = document.createElement('tr');
+  header.innerHTML = `<th class="fixed-col">70%컷</th>`;
+  selectedUniversities.forEach((uni, idx) => {
+    header.innerHTML += `<th class="uni-header color-${idx % 5}">
+      ${uni} <span class="remove" onclick="removeUniversity('${uni}')">✖</span></th>`;
   });
-  html += `</tr></thead><tbody>`;
+  table.appendChild(header);
 
-  fullData.forEach(row => {
-    if (!matchesSearch(JSON.stringify(row))) return;
-
-    html += `<tr><td>${highlightKeyword(row["70%컷"] || "")}</td>`;
-    selectedUniversities.forEach((u, i) => {
-      const cell = highlightKeyword(row[u] || "");
-      html += `<td data-color="${i % 5}">${cell}</td>`;
+  gpaLevels.forEach(level => {
+    const row = document.createElement('tr');
+    row.innerHTML = `<td class="fixed-col level">${level}</td>`;
+    selectedUniversities.forEach((uni, idx) => {
+      const text = allData[currentSheet][level]?.[uni] || '';
+      const td = document.createElement('td');
+      td.innerHTML = highlightSearch(text);
+      td.classList.add(`color-${idx % 5}`);
+      row.appendChild(td);
     });
-    html += `</tr>`;
+    table.appendChild(row);
   });
-
-  html += `</tbody></table>`;
-  box.innerHTML = html;
 }
 
-/* ---------------- 초기화 ---------------- */
-document.getElementById("resetBtn").onclick = () => {
+function highlightSearch(text) {
+  const keyword = document.getElementById('searchInput').value.trim();
+  if (!keyword) return text;
+  const regex = new RegExp(`(${keyword})`, 'gi');
+  return text.replace(regex, `<span class="highlight">$1</span>`);
+}
+
+document.getElementById('universitySelect').addEventListener('change', e => {
+  const uni = e.target.value;
+  if (uni && !selectedUniversities.includes(uni)) {
+    selectedUniversities.push(uni);
+    renderTable();
+  }
+  e.target.value = '';
+});
+
+function removeUniversity(uni) {
+  selectedUniversities = selectedUniversities.filter(u => u !== uni);
+  renderTable();
+}
+
+document.getElementById('reset').addEventListener('click', () => {
   selectedUniversities = [];
-  document.getElementById("searchInput").value = "";
+  document.getElementById('searchInput').value = '';
   renderTable();
-};
+});
 
-document.getElementById("addCompareBtn").onclick = () => {
-  const sel = document.getElementById("collegeSelect");
-  if (!sel.value) return;
-  if (!selectedUniversities.includes(sel.value)) {
-    selectedUniversities.push(sel.value);
+document.getElementById('addCompare').addEventListener('click', () => {
+  const uni = document.getElementById('universitySelect').value;
+  if (uni && !selectedUniversities.includes(uni)) {
+    selectedUniversities.push(uni);
+    renderTable();
   }
+});
+
+document.getElementById('searchInput').addEventListener('input', () => {
   renderTable();
-};
+});
 
-document.getElementById("searchInput").oninput = renderTable;
-
-/* ---------------- 상단 스크롤 버튼 ---------------- */
-const scrollBtn = document.getElementById("scrollTopBtn");
+// 스크롤 상단 버튼
+const scrollTopBtn = document.getElementById("scrollTopBtn");
 window.addEventListener("scroll", () => {
-  if (window.scrollY > 200) {
-    scrollBtn.classList.remove("hidden");
-  } else {
-    scrollBtn.classList.add("hidden");
-  }
+  scrollTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
 });
-scrollBtn.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+scrollTopBtn.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-/* ---------------- 로드 ---------------- */
-document.addEventListener("DOMContentLoaded", loadAll);
+loadData();
