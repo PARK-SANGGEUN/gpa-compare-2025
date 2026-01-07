@@ -1,95 +1,189 @@
+/* 기본 세팅 */
 body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background: linear-gradient(to bottom, #eef2ff, #ffffff);
+  font-family: 'Segoe UI', '맑은 고딕', sans-serif;
+  background: #f4f6fd;
+  margin: 0;
+  padding: 0;
+  color: #222;
 }
 
-/* 테이블 */
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: auto;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #1e3a8a;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 0.3rem;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.instructions {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+select, input[type="text"] {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  min-width: 160px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button.add {
+  background: #2563eb;
+  color: white;
+}
+
+button.reset {
+  background: #f87171;
+  color: white;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+}
+
 table {
+  border-collapse: collapse;
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  min-width: 800px;
 }
 
 th, td {
-  border: 1px solid #cbd5e1;
-  padding: 10px;
+  padding: 0.8rem;
   text-align: center;
-  font-weight: 600;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  white-space: nowrap;
 }
 
-/* 헤더 고정 */
-thead th {
+th {
+  background-color: #e2e8f0;
+  font-weight: bold;
   position: sticky;
   top: 0;
-  background: #dbeafe;
-  z-index: 20;
-  font-size: 1rem;
-  color: #0f172a;
+  z-index: 2;
 }
 
-/* 70%컷 고정 */
-th:first-child,
-td:first-child {
+.fixed-col {
   position: sticky;
   left: 0;
-  background: #fef3c7;
-  color: #92400e;
-  font-weight: 800;
-  z-index: 15;
-}
-
-/* hover 효과 */
-tr:hover td {
-  background-color: #f8fafc;
-}
-
-/* 컬럼별 색상 */
-td[data-color="0"], th[data-color="0"] { background:#e0f2fe; }
-td[data-color="1"], th[data-color="1"] { background:#fce7f3; }
-td[data-color="2"], th[data-color="2"] { background:#ede9fe; }
-td[data-color="3"], th[data-color="3"] { background:#dcfce7; }
-td[data-color="4"], th[data-color="4"] { background:#fff7ed; }
-
-th[data-color], td[data-color] {
-  font-weight: 600;
-  color: #1f2937;
-}
-
-/* 삭제 버튼 */
-.delete-btn {
-  color: #dc2626;
+  background-color: #fef3c7 !important;
   font-weight: bold;
+  color: #7c2d12;
+  z-index: 1;
+}
+
+.level {
+  font-weight: bold;
+}
+
+.uni-header {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.remove {
+  color: red;
+  margin-left: 5px;
   cursor: pointer;
 }
 
-.delete-btn:hover {
-  color: #991b1b;
-  transform: scale(1.2);
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+  padding: 0 2px;
+  border-radius: 3px;
 }
 
-/* 검색 강조 */
-mark {
-  background-color: #fef08a;
-  color: #1e293b;
-  font-weight: 900;
-  padding: 0 3px;
-  border-radius: 4px;
+/* 대학별 색상 테마 */
+.color-0 {
+  background-color: #e0f2fe; /* 하늘 */
+}
+.color-1 {
+  background-color: #fde2e2; /* 연핑크 */
+}
+.color-2 {
+  background-color: #ede9fe; /* 연보라 */
+}
+.color-3 {
+  background-color: #d1fae5; /* 민트 */
+}
+.color-4 {
+  background-color: #fff7cd; /* 크림 */
 }
 
-/* 상단 이동 버튼 */
+/* 맨 위로 버튼 */
 #scrollTopBtn {
-  z-index: 50;
+  position: fixed;
+  bottom: 40px;
+  right: 30px;
+  display: none;
+  z-index: 10;
+  background-color: #4b5563;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+}
+#scrollTopBtn:hover {
+  background-color: #1f2937;
 }
 
-/* 반응형 */
-@media (max-width: 768px) {
-  th, td {
-    font-size: 0.85rem;
-    padding: 0.5rem;
+/* 모바일 최적화 */
+@media screen and (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: center;
   }
-
-  input, select, button {
+  table {
     font-size: 0.85rem;
+  }
+  th, td {
+    padding: 0.5rem;
   }
 }
