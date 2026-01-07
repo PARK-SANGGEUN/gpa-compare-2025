@@ -1,174 +1,186 @@
-/* 기본 설정 */
+/* =========================
+   기본 레이아웃 & 배경
+=========================*/
 body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background-color: #f4f6fc;
+  font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  background: linear-gradient(135deg, #eef3ff, #ffffff);
   margin: 0;
-  padding: 0;
-  color: #333;
 }
 
-h1 {
-  text-align: center;
-  font-size: 2rem;
-  margin: 1.5rem 0 0.5rem;
-  color: #0a1f44;
-}
-
-p, li {
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
+/* 중앙 컨테이너 */
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 1rem;
+  max-width: 1200px;
+  margin: auto;
+  padding: 25px;
 }
 
+/* 제목 */
+.main-title {
+  text-align: center;
+  color: #0a2a66;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+/* 저작권 */
+.subtitle {
+  text-align: center;
+  color: #333;
+  font-weight: 600;
+}
+
+/* 안내문 */
+.instructions {
+  margin-top: 15px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+
+/* =========================
+   컨트롤 영역
+=========================*/
 .controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  flex-direction: column;
+  text-align: center;
+  margin-top: 20px;
 }
 
-@media (min-width: 600px) {
-  .controls {
-    flex-direction: row;
-  }
-}
-
-input, select, button {
-  padding: 0.5rem;
-  font-size: 1rem;
+input,
+select {
+  padding: 9px 12px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #cdd7e3;
+  font-size: 14px;
 }
 
+/* 버튼 */
 button {
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: none;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 14px;
 }
 
-button.add {
-  background-color: #2563eb;
+.add {
+  background-color: #1e63ff;
   color: white;
-  border: none;
 }
 
-button.reset {
-  background-color: #f87171;
+.reset {
+  background-color: #ff6060;
   color: white;
-  border: none;
 }
 
-/* 테이블 스타일 */
+
+/* =========================
+   표 전체 스타일
+=========================*/
 .table-wrapper {
-  overflow-x: auto;
-  border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  margin-top: 1.5rem;
+  margin-top: 25px;
+  max-height: 620px;
+  overflow: auto;
+  border-radius: 12px;
+  border: 2px solid #d4ddee;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.12);
 }
 
-.fixed-table {
+/* 테이블 */
+table {
   border-collapse: collapse;
   width: 100%;
-  table-layout: fixed;
-  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
-.fixed-table thead tr {
-  position: sticky;
-  top: 0;
+/* 헤더 */
+thead th {
   background-color: #002f6c;
   color: white;
-  z-index: 2;
-}
-
-.fixed-table th, .fixed-table td {
-  border: 1px solid #ddd;
-  padding: 0.6rem;
+  padding: 12px;
   text-align: center;
-  word-break: break-word;
+  font-size: 15px;
+  font-weight: 800;
+  position: sticky;
+  top: 0;
+  z-index: 3;
 }
 
-.fixed-table td:first-child, .fixed-table th:first-child {
+/* 행 */
+tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #e3e7ef;
+}
+
+/* =========================
+   고정 열 기능
+=========================*/
+
+/* 첫 열(70%컷) 전체 고정 */
+tbody td:first-child,
+thead th:first-child {
   position: sticky;
   left: 0;
-  background-color: #fff9e6;
-  z-index: 1;
-  font-weight: bold;
-}
-
-.fixed-table td.highlight {
-  background-color: #fffae6;
-  font-weight: bold;
-  color: #d97706;
-}
-
-/* 컬럼별 색상 */
-.bg-color-0 {
-  background: linear-gradient(to bottom, #e0f2fe, #f0f9ff);
-}
-.bg-color-1 {
-  background: linear-gradient(to bottom, #fef3c7, #fff7ed);
-}
-.bg-color-2 {
-  background: linear-gradient(to bottom, #dcfce7, #f0fdf4);
-}
-.bg-color-3 {
-  background: linear-gradient(to bottom, #fae8ff, #fdf4ff);
-}
-.bg-color-4 {
-  background: linear-gradient(to bottom, #fce7f3, #fdf2f8);
-}
-.bg-color-5 {
-  background: linear-gradient(to bottom, #fef9c3, #fefce8);
-}
-
-/* 제거 버튼 */
-.remove-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 1rem;
-  margin-left: 0.25rem;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.remove-btn:hover {
-  color: #fbbf24;
-}
-
-/* 선택된 대학 표시 */
-.selected-universities {
+  z-index: 2;
+  background-color: #fff7d6;
+  font-weight: 700;
   text-align: center;
-  font-size: 1rem;
-  margin-top: 1rem;
-  color: #111827;
-  font-weight: 500;
 }
 
-/* 자동완성 dropdown */
-#autocomplete-list {
-  position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  max-height: 150px;
-  overflow-y: auto;
-  z-index: 10;
+/* 헤더 우선순위 더 높임 */
+thead th:first-child {
+  z-index: 4;
 }
 
-#autocomplete-list div {
-  padding: 0.5rem;
+/* =========================
+   색상 강조 (선택 대학 컬럼)
+=========================*/
+
+.selected-col-0 { background-color: #e6f1ff; }
+.selected-col-1 { background-color: #fff0e6; }
+.selected-col-2 { background-color: #e9ffef; }
+.selected-col-3 { background-color: #f4e9ff; }
+.selected-col-4 { background-color: #fff3f3; }
+
+/* 테두리 더 두껍게 */
+th, td {
+  border-right: 1px solid #cbd3e3;
+}
+
+.selected-outline {
+  border-right: 3px solid #0b3cff;
+}
+
+/* =========================
+   검색 하이라이트
+=========================*/
+.highlight {
+  background-color: #ffe066 !important;
+  font-weight: 900;
+}
+
+/* =========================
+   행 hover 효과
+=========================*/
+tbody tr:hover {
+  background-color: #f4f7ff;
+  transition: 0.2s;
+}
+
+/* =========================
+   상단 이동 버튼
+=========================*/
+#scrollTopBtn {
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+  background-color: #0039e6;
+  color: white;
+  padding: 12px 14px;
+  border-radius: 50%;
+  font-size: 16px;
   cursor: pointer;
-}
-
-#autocomplete-list div:hover {
-  background-color: #f0f0f0;
+  display: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
