@@ -1,143 +1,113 @@
 body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background: #f4f7ff;
+  font-family: 'Pretendard', sans-serif;
+  background-color: #f5f7ff;
   margin: 0;
-  padding: 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: auto;
   padding: 20px;
+  color: #222;
 }
 
-.main-title {
+h1.main-title {
   text-align: center;
-  font-size: 2.5rem;
-  color: #102a63;
+  font-size: 2rem;
   font-weight: bold;
-  margin-top: 20px;
+  color: #0a1d56;
 }
 
 .subtitle {
   text-align: center;
+  margin-bottom: 1rem;
   font-weight: bold;
-  margin-bottom: 10px;
 }
 
 .instructions {
-  margin-bottom: 20px;
+  max-width: 800px;
+  margin: 0 auto 20px auto;
+  padding-left: 0;
+  list-style: none;
+}
+
+.instructions li::before {
+  content: '● ';
+  color: black;
 }
 
 .controls {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 20px;
 }
 
-input[type="text"],
-select {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+.controls input,
+.controls select {
+  padding: 6px 10px;
   font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.controls button {
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
 }
 
 button.add {
-  background-color: #2563eb;
+  background-color: #1e40af;
   color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 button.reset {
   background-color: #f87171;
   color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 .table-wrapper {
   overflow-x: auto;
+  margin-top: 10px;
 }
 
 table {
-  border-collapse: collapse;
   width: 100%;
+  border-collapse: collapse;
   min-width: 600px;
 }
 
-th,
-td {
-  border: 1px solid #ccc;
-  padding: 10px;
+th, td {
+  border: 1px solid #ddd;
+  padding: 6px;
   text-align: center;
+  font-size: 14px;
 }
 
-th.sticky-col,
-td.sticky-col {
-  position: sticky;
-  left: 0;
-  background-color: #fffbe6;
-  z-index: 1;
-  font-weight: bold;
+th {
+  background-color: #e2e8f0;
 }
 
 .bg-yellow {
-  background-color: #fff8cc;
-  color: #7a3e00;
-}
-
-.text-bold {
+  background-color: #fef3c7;
   font-weight: bold;
 }
 
 .highlight {
-  background-color: #ffe0e0;
-}
-
-.bg-color-0 {
-  background-color: #e0f2ff;
-}
-.bg-color-1 {
-  background-color: #ffe0f0;
-}
-.bg-color-2 {
-  background-color: #eee0ff;
-}
-.bg-color-3 {
-  background-color: #e0ffe7;
-}
-.bg-color-4 {
-  background-color: #fff0cc;
-}
-
-.remove {
-  color: red;
-  font-size: 0.9rem;
-  cursor: pointer;
-  margin-left: 6px;
+  background-color: #fda4af;
 }
 
 #scrollTopBtn {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #3b82f6;
+  background: #1e3a8a;
   color: white;
+  padding: 8px 12px;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
   font-size: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   cursor: pointer;
+  z-index: 100;
+  display: none;
 }
