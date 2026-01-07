@@ -18,14 +18,14 @@ function populateUniversityDropdown() {
 
   dropdown.innerHTML = '<option value="">대학 선택</option>';
   headers.forEach(header => {
-    const option = document.createElement("option");
+    const option = document.createElement('option');
     option.value = header;
     option.textContent = header;
     dropdown.appendChild(option);
   });
 
-  dropdown.addEventListener("change", e => {
-    const value = e.target.value;
+  document.getElementById("addCompare").addEventListener("click", () => {
+    const value = dropdown.value;
     if (value && !selectedUniversities.includes(value)) {
       selectedUniversities.push(value);
       renderTable();
@@ -37,32 +37,33 @@ function populateUniversityDropdown() {
 
 function renderTable() {
   const container = document.getElementById("table-container");
-  const search = document.getElementById("searchInput").value.trim();
+  const keyword = document.getElementById("searchInput").value.trim();
+
   if (selectedUniversities.length === 0) {
-    container.innerHTML = '<div class="text-gray-500 text-center mt-4">대학을 선택해주세요.</div>';
+    container.innerHTML = '<div class="text-gray-500 mt-4">대학을 선택해주세요.</div>';
     return;
   }
 
-  let html = '<table><thead><tr>';
-  html += `<th>70%컷</th>`;
+  let tableHTML = '<table><thead><tr>';
+  tableHTML += `<th>70%컷</th>`;
   selectedUniversities.forEach(uni => {
-    html += `<th>${uni}</th>`;
+    tableHTML += `<th>${uni}</th>`;
   });
-  html += '</tr></thead><tbody>';
+  tableHTML += '</tr></thead><tbody>';
 
   jsonData.forEach(row => {
-    html += '<tr>';
-    html += `<td class="bg-yellow">${row["70%컷"] || ''}</td>`;
+    tableHTML += '<tr>';
+    tableHTML += `<td class="bg-yellow">${row["70%컷"] || ''}</td>`;
     selectedUniversities.forEach(uni => {
       const value = row[uni] || '';
-      const highlight = search && value.includes(search) ? 'highlight' : '';
-      html += `<td class="${highlight}">${value}</td>`;
+      const highlight = keyword && value.includes(keyword) ? 'highlight' : '';
+      tableHTML += `<td class="${highlight}">${value}</td>`;
     });
-    html += '</tr>';
+    tableHTML += '</tr>';
   });
 
-  html += '</tbody></table>';
-  container.innerHTML = html;
+  tableHTML += '</tbody></table>';
+  container.innerHTML = tableHTML;
 }
 
 function resetSelection() {
@@ -73,19 +74,14 @@ function resetSelection() {
 }
 
 document.getElementById("reset").addEventListener("click", resetSelection);
+
 document.getElementById("scrollTopBtn").addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
-document.addEventListener("DOMContentLoaded", () => {
-  loadData();
 
-  // 스크롤 버튼 표시 제어
-  window.addEventListener("scroll", () => {
-    const scrollBtn = document.getElementById("scrollTopBtn");
-    if (window.scrollY > 200) {
-      scrollBtn.style.display = "block";
-    } else {
-      scrollBtn.style.display = "none";
-    }
-  });
+window.addEventListener("scroll", () => {
+  document.getElementById("scrollTopBtn").style.display =
+    window.scrollY > 100 ? "block" : "none";
 });
+
+document.addEventListener("DOMContentLoaded", loadData);
