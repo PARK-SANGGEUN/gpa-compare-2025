@@ -1,127 +1,144 @@
+/* 기본 레이아웃 */
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
-  background: #f5f7fc;
-  color: #333;
+  background: #f4f7fe;
+  color: #222;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 20px;
+  max-width: 1400px;
+  margin: auto;
 }
 
 .main-title {
-  text-align: center;
   font-size: 2.5rem;
-  font-weight: 900;
-  color: #12246b;
-  text-shadow: 1px 1px 2px #ccc;
+  text-align: center;
+  color: #0a2e72;
+  font-weight: 800;
+  margin-bottom: 10px;
 }
 
 .subtitle {
   text-align: center;
   font-weight: bold;
-  margin-bottom: 20px;
+  color: #444;
 }
 
 .instructions {
-  list-style: inside;
-  line-height: 1.6;
-  margin-bottom: 20px;
-  font-size: 1.1rem;
+  margin-top: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .controls {
-  text-align: center;
-  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+  justify-content: center;
 }
 
-.controls input,
-.controls select,
-.controls button {
-  margin: 5px;
-  padding: 8px 12px;
-  font-size: 1rem;
-  border-radius: 6px;
+input, select, button {
+  padding: 10px;
+  border-radius: 8px;
   border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
-button.add {
-  background-color: #1d4ed8;
+.add {
+  background-color: #1e40af;
   color: white;
-  border: none;
 }
 
-button.reset {
-  background-color: #f87171;
-  color: white;
-  border: none;
+.reset {
+  background-color: #fca5a5;
+  color: #000;
 }
 
-#tableContainer {
+.table-wrapper {
   overflow-x: auto;
-  max-height: 600px;
   border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
 #gpaTable {
   width: 100%;
   border-collapse: collapse;
-}
-
-#gpaTable th,
-#gpaTable td {
-  border: 1px solid #ccc;
-  padding: 10px;
   text-align: center;
-  white-space: pre-line;
 }
 
-#gpaTable th.fixed-col {
+#gpaTable th, #gpaTable td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  min-width: 120px;
+}
+
+#gpaTable th {
+  position: sticky;
+  top: 0;
+  background: #f0f0f0;
+  z-index: 2;
+}
+
+/* 왼쪽 70%컷 고정 */
+#gpaTable td:first-child,
+#gpaTable th:first-child {
   position: sticky;
   left: 0;
-  background: #fef3c7;
-  font-weight: bold;
-  color: #92400e;
+  background: #fff7cc;
   z-index: 1;
-}
-
-.score-cell {
-  background: #fef3c7;
   font-weight: bold;
-  color: #92400e;
+  color: #924c00;
 }
 
-.uni-cell {
-  font-weight: 500;
-  font-size: 0.95rem;
-}
+/* 대학 컬럼별 색상 */
+.column-0 { background-color: #e0f2fe; }
+.column-1 { background-color: #fce7f3; }
+.column-2 { background-color: #ede9fe; }
+.column-3 { background-color: #dcfce7; }
+.column-4 { background-color: #fff1f2; }
 
-/* 구분 색상 */
-.uni-color-0 { background: #e0f2fe; }
-.uni-color-1 { background: #fce7f3; }
-.uni-color-2 { background: #ede9fe; }
-.uni-color-3 { background: #dcfce7; }
-.uni-color-4 { background: #fef9c3; }
-
+/* 검색 하이라이트 */
 .highlight {
-  background-color: #fffacc !important;
-  transition: background-color 0.3s;
+  background-color: #facc15 !important;
+  font-weight: bold;
 }
 
+/* 상단 스크롤 버튼 */
 #scrollTopBtn {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background-color: #4f46e5;
+  display: none;
+  background-color: #0f172a;
   color: white;
   border: none;
+  padding: 12px;
   border-radius: 50%;
-  padding: 10px 15px;
-  font-size: 20px;
   cursor: pointer;
-  z-index: 999;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 99;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .main-title {
+    font-size: 1.8rem;
+  }
+
+  input, select, button {
+    width: 100%;
+  }
+
+  #gpaTable th, #gpaTable td {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
 }
