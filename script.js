@@ -1,9 +1,9 @@
 let jsonData = [];
-let selectedUniversities = [];
+let selectedUniversities = ["경희대", "고려대", "서강대"];
 
 async function loadData() {
     try {
-        const response = await fetch('data/gpa_data_final.json');
+        const response = await fetch('./data/gpa_data_final.json');
         jsonData = await response.json();
         populateUniversityDropdown();
         renderTable();
@@ -13,19 +13,21 @@ async function loadData() {
 }
 
 function populateUniversityDropdown() {
-    const dropdown = document.getElementById("universitySelect");
-    dropdown.innerHTML = '<option value="">대학 선택</option>';
-
+    const dropdown = document.getElementById('universitySelect');
     const headers = Object.keys(jsonData[0]).filter(h => h !== "70%컷");
+
+    dropdown.innerHTML = '<option value="">대학 선택</option>';
     headers.forEach(header => {
-        const option = document.createElement("option");
-        option.value = header;
-        option.textContent = header;
-        dropdown.appendChild(option);
+        if (!selectedUniversities.includes(header)) {
+            const option = document.createElement('option');
+            option.value = header;
+            option.textContent = header;
+            dropdown.appendChild(option);
+        }
     });
 
-    dropdown.addEventListener("change", (e) => {
-        const value = e.target.value;
+    dropdown.addEventListener('change', () => {
+        const value = dropdown.value;
         if (value && !selectedUniversities.includes(value)) {
             selectedUniversities.push(value);
             renderTable();
@@ -36,48 +38,53 @@ function populateUniversityDropdown() {
 }
 
 function renderTable() {
-    const tableContainer = document.getElementById('table-container');
+    const tableContainer = document.getElementById('tableContainer');
     const searchKeyword = document.getElementById("searchInput").value.trim();
-
     if (selectedUniversities.length === 0) {
         tableContainer.innerHTML = '<div class="text-gray-500 text-center mt-4">대학을 선택해주세요.</div>';
         return;
     }
 
-    let tableHTML = '<table class="min-w-full border border-gray-300 shadow-md">';
-    tableHTML += '<thead><tr>';
-    tableHTML += '<th class="bg-yellow text-center border p-2">70%컷</th>';
+    let tableHTML = '<div class="table-scroll"><table><thead><tr>';
+    tableHTML += '<th class="sticky-col left bg-yellow">70%컷</th>';
     selectedUniversities.forEach((uni, index) => {
-        tableHTML += `<th class="bg-color-${index} text-center border p-2">${uni}</th>`;
+        tableHTML += `<th class="bg-selected-${index % 6} sticky-header">${uni} <button onclick="removeUniversity('${uni}')" class="remove-btn">×</button></th>`;
     });
     tableHTML += '</tr></thead><tbody>';
 
     jsonData.forEach(row => {
+        const showRow = selectedUniversities.some(uni => (row[uni] || "").includes(searchKeyword));
+        if (searchKeyword && !showRow) return;
+
         tableHTML += '<tr>';
-        tableHTML += `<td class="border p-2 text-center bg-yellow text-bold">${row["70%컷"] || ''}</td>`;
+        tableHTML += `<td class="sticky-col left bg-yellow bold">${row["70%컷"] || ''}</td>`;
         selectedUniversities.forEach((uni, index) => {
             const value = row[uni] || '';
             const highlight = searchKeyword && value.includes(searchKeyword) ? 'highlight' : '';
-            tableHTML += `<td class="border p-2 ${highlight}">${value}</td>`;
+            tableHTML += `<td class="cell bg-selected-${index % 6} ${highlight}">${value}</td>`;
         });
         tableHTML += '</tr>';
     });
 
-    tableHTML += '</tbody></table>';
+    tableHTML += '</tbody></table></div>';
     tableContainer.innerHTML = tableHTML;
 }
 
-function resetSelection() {
-    selectedUniversities = [];
-    document.getElementById("universitySelect").value = "";
-    document.getElementById("searchInput").value = "";
+function removeUniversity(uni) {
+    selectedUniversities = selectedUniversities.filter(item => item !== uni);
+    populateUniversityDropdown();
     renderTable();
 }
 
-document.getElementById("reset").addEventListener("click", resetSelection);
+function resetSelection() {
+    selectedUniversities = ["경희대", "고려대", "서강대"];
+    document.getElementById("searchInput").value = "";
+    populateUniversityDropdown();
+    renderTable();
+}
 
+document.getElementById('reset').addEventListener('click', resetSelection);
 document.getElementById("scrollTopBtn").addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 });
-
-document.addEventListener("DOMContentLoaded", loadData);
+document.addEventListener('DOMContentLoaded', loadData);
