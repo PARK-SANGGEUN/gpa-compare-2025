@@ -1,130 +1,128 @@
 body {
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-  background: linear-gradient(180deg, #eef3ff 0%, #ffffff 40%);
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #f3f7ff, #e6ecff);
   margin: 0;
+  padding: 0;
+  color: #111;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1100px;
+  margin: auto;
   padding: 20px;
 }
 
 .main-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #0b2c71;
   text-align: center;
-  font-size: 32px;
-  font-weight: 900;
-  color: #0e2a6b;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .subtitle {
   text-align: center;
+  color: #333;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
 .instructions {
-  font-size: 14px;
-  color: #333;
-  line-height: 1.6;
+  list-style-type: disc;
+  margin-bottom: 20px;
+  padding-left: 20px;
 }
 
 .controls {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: center;
-  gap: 8px;
-  margin: 10px 0 5px 0;
+  margin-bottom: 15px;
 }
 
-button {
-  cursor: pointer;
+input[type="text"], select {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
   border-radius: 6px;
+  min-width: 180px;
+}
+
+button.add {
+  background-color: #1d4ed8;
+  color: white;
   border: none;
-  padding: 7px 12px;
-}
-
-.add {
-  background: #2563eb;
-  color: white;
-  font-weight: bold;
-}
-
-.reset {
-  background: #f87171;
-  color: white;
-  font-weight: bold;
-}
-
-#searchInput,
-#universitySelect {
-  padding: 7px;
-  border: 1px solid #bbb;
+  padding: 8px 14px;
   border-radius: 6px;
+  cursor: pointer;
+}
+
+button.reset {
+  background-color: #f87171;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.add:hover, button.reset:hover {
+  opacity: 0.9;
 }
 
 .table-wrapper {
-  max-height: 560px;
-  overflow: auto;
-  border: 2px solid #d0d7ff;
-  border-radius: 12px;
-  background: white;
+  overflow-x: auto;
 }
 
-/* 표 스타일 */
-#gpaTable {
+table {
   width: 100%;
   border-collapse: collapse;
 }
 
-#gpaTable th,
-#gpaTable td {
-  border: 1px solid #ddd;
-  padding: 6px;
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
   text-align: center;
-  font-size: 14px;
 }
 
-/* 헤더 고정 */
-#gpaTable thead th {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  background: #e7f0ff;
-  font-weight: 900;
+th {
+  font-weight: bold;
 }
 
-/* 첫 번째 열 고정 */
-#gpaTable td:first-child,
-#gpaTable th:first-child {
-  position: sticky;
-  left: 0;
-  background: #fff6d4;
-  z-index: 2;
-  font-weight: 800;
+.bg-yellow {
+  background-color: #fff4cc;
+  color: #7a4e00;
 }
 
-/* 선택 대학 색상 */
-.col-0 { background: #e6f2ff; }
-.col-1 { background: #fde9f3; }
-.col-2 { background: #ede9fe; }
-.col-3 { background: #e8ffef; }
-.col-4 { background: #fff3d9; }
-
-/* 검색 하이라이트 */
-mark {
-  background: #ffde59;
-  font-weight: 900;
+.text-bold {
+  font-weight: bold;
 }
 
-/* 상단 이동 버튼 */
+.highlight {
+  background-color: #fef3c7;
+  font-weight: bold;
+}
+
+.bg-color-0 { background-color: #e0f2fe; }
+.bg-color-1 { background-color: #fce7f3; }
+.bg-color-2 { background-color: #ede9fe; }
+.bg-color-3 { background-color: #dcfce7; }
+
 #scrollTopBtn {
   position: fixed;
-  right: 20px;
-  bottom: 20px;
-  background: #2563eb;
+  bottom: 30px;
+  right: 30px;
+  padding: 10px 15px;
+  background-color: #4b5563;
   color: white;
-  font-size: 18px;
-  padding: 10px 13px;
+  border: none;
   border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
   display: none;
+}
+
+#scrollTopBtn.show {
+  display: block;
 }
