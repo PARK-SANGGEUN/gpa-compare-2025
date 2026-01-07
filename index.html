@@ -1,35 +1,124 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>모두의 2025 교과전형 배치표</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>모두의 <strong>2025</strong>학년도 교과전형 배치표</h1>
-    <p class="subtitle">Copyright@ All Teachers</p>
-    <ul class="instructions">
-      <li>① 어디가 2025학년도 입시결과 기준 교과전형 배치표 (최종등록자 교과등급 70%컷)</li>
-      <li>② 학과(전형, 모집인원) 표기, 70% 컷은 모집인원×0.7에 해당하는 등수 성적</li>
-      <li>③ 자신의 희망 대학, 학과의 교과 성적 단순 참고! 수능최저, 경쟁률도 확인 필요</li>
-    </ul>
+let gpaData = {};
+let selectedUniversities = [];
+let allDepartments = new Set();
 
-    <div class="controls">
-      <input type="text" id="searchInput" placeholder="학과명, 전형 검색..." />
-      <select id="universitySelect"></select>
-      <button id="addCompare" class="add">+ 비교 추가</button>
-      <button id="reset" class="reset">초기화</button>
-    </div>
+async function loadData() {
+  const response = await fetch('data/gpa_data_통합_final.json');
+  const data = await response.json();
+  gpaData = data;
 
-    <div id="tableContainer" class="table-wrapper">
-      <table id="gpaTable"></table>
-    </div>
+  Object.values(data).forEach(departments => {
+    Object.values(departments).forEach(name => {
+      allDepartments.add(name);
+    });
+  });
 
-    <button id="scrollTopBtn" title="맨 위로">▲</button>
-  </div>
+  updateUniversitySelect();
+  renderTable();
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+function updateUniversitySelect() {
+  const select = document.getElementById('universitySelect');
+  select.innerHTML = '';
+
+  const universities = Object.keys(gpaData).sort();
+  universities.forEach(uni => {
+    if (!selectedUniversities.includes(uni)) {
+      const option = document.createElement('option');
+      option.value = uni;
+      option.textContent = uni;
+      select.appendChild(option);
+    }
+  });
+}
+
+function renderTable() {
+  const table = document.getElementById('gpaTable');
+  table.innerHTML = '';
+
+  const header = document.createElement('tr');
+  const baseHeader = document.createElement('th');
+  baseHeader.textContent = '70%컷';
+  baseHeader.classList.add('fixed-col');
+  header.appendChild(baseHeader);
+
+  selectedUniversities.forEach((uni, index) => {
+    const th = document.createElement('th');
+    th.textContent = uni;
+    th.className = `uni-color-${index % 5}`;
+    const removeBtn = document.createElement('span');
+    removeBtn.textContent = ' ❌';
+    removeBtn.style.cursor = 'pointer';
+    removeBtn.onclick = () => {
+      selectedUniversities = selectedUniversities.filter(u => u !== uni);
+      updateUniversitySelect();
+      renderTable();
+    };
+    th.appendChild(removeBtn);
+    header.appendChild(th);
+  });
+
+  table.appendChild(header);
+
+  const scores = Array.from(
+    new Set(
+      selectedUniversities.flatMap(uni =>
+        Object.keys(gpaData[uni] || {})
+      )
+    )
+  ).sort((a, b) => parseFloat(a) - parseFloat(b));
+
+  scores.forEach(score => {
+    const row = document.createElement('tr');
+    const scoreCell = document.createElement('td');
+    scoreCell.textContent = score;
+    scoreCell.classList.add('score-cell');
+    row.appendChild(scoreCell);
+
+    selectedUniversities.forEach((uni, index) => {
+      const cell = document.createElement('td');
+      cell.className = `uni-cell uni-color-${index % 5}`;
+      if (gpaData[uni][score]) {
+        cell.textContent = gpaData[uni][score];
+      }
+      row.appendChild(cell);
+    });
+
+    table.appendChild(row);
+  });
+}
+
+document.getElementById('addCompare').addEventListener('click', () => {
+  const select = document.getElementById('universitySelect');
+  const value = select.value;
+  if (value && !selectedUniversities.includes(value)) {
+    selectedUniversities.push(value);
+    updateUniversitySelect();
+    renderTable();
+  }
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  selectedUniversities = [];
+  updateUniversitySelect();
+  renderTable();
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  const keyword = e.target.value.toLowerCase();
+  const rows = document.querySelectorAll('#gpaTable tr');
+  rows.forEach((row, i) => {
+    if (i === 0) return;
+    const match = Array.from(row.cells).some(cell =>
+      cell.textContent.toLowerCase().includes(keyword)
+    );
+    row.style.display = match ? '' : 'none';
+    if (match) row.classList.add('highlight'); else row.classList.remove('highlight');
+  });
+});
+
+document.getElementById('scrollTopBtn').addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+window.addEventListener('DOMContentLoaded', loadData);
