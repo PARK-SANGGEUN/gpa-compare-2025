@@ -1,137 +1,186 @@
+/* =========================
+   기본 레이아웃 & 배경
+=========================*/
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f7ff;
+  font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  background: linear-gradient(135deg, #eef3ff, #ffffff);
   margin: 0;
-  padding: 0;
 }
 
+/* 중앙 컨테이너 */
 .container {
   max-width: 1200px;
   margin: auto;
-  padding: 2rem;
+  padding: 25px;
 }
 
+/* 제목 */
 .main-title {
   text-align: center;
-  color: #0d2b5e;
-  font-size: 2.5rem;
-  font-weight: bold;
+  color: #0a2a66;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
 }
 
+/* 저작권 */
 .subtitle {
   text-align: center;
-  font-weight: bold;
-  margin-bottom: 1rem;
+  color: #333;
+  font-weight: 600;
 }
 
+/* 안내문 */
 .instructions {
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
+  margin-top: 15px;
+  font-size: 15px;
+  line-height: 1.7;
 }
 
-.instructions li {
-  margin-bottom: 0.3rem;
-}
 
+/* =========================
+   컨트롤 영역
+=========================*/
 .controls {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
+  text-align: center;
+  margin-top: 20px;
 }
 
-input[type="text"], select {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+input,
+select {
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid #cdd7e3;
+  font-size: 14px;
+}
+
+/* 버튼 */
+button {
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .add {
-  background-color: #295dd8;
+  background-color: #1e63ff;
   color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 .reset {
-  background-color: #f66;
+  background-color: #ff6060;
   color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
+
+/* =========================
+   표 전체 스타일
+=========================*/
 .table-wrapper {
-  overflow-x: auto;
-  position: relative;
+  margin-top: 25px;
+  max-height: 620px;
+  overflow: auto;
+  border-radius: 12px;
+  border: 2px solid #d4ddee;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.12);
 }
 
-.scrollable-table {
-  max-height: 600px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-}
-
+/* 테이블 */
 table {
-  width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  width: 100%;
+  font-size: 14px;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 0.75rem;
-  text-align: center;
-  font-size: 0.95rem;
-  word-break: break-word;
-}
-
-th.sticky, td.sticky {
-  position: sticky;
-  left: 0;
-  background: #ffe;
-  z-index: 2;
-}
-
-th.sticky-top, td.sticky-top {
-  top: 0;
-  z-index: 3;
+/* 헤더 */
+thead th {
   background-color: #002f6c;
   color: white;
-  font-weight: bold;
-}
-
-.highlight {
-  background-color: #ffeb3b;
-  font-weight: bold;
-}
-
-.selected-universities {
+  padding: 12px;
   text-align: center;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 800;
+  position: sticky;
+  top: 0;
+  z-index: 3;
 }
 
-.color-0 { background-color: #e6f7ff; }
-.color-1 { background-color: #fff4e6; }
-.color-2 { background-color: #e6ffe6; }
-.color-3 { background-color: #f9e6ff; }
+/* 행 */
+tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #e3e7ef;
+}
 
+/* =========================
+   고정 열 기능
+=========================*/
+
+/* 첫 열(70%컷) 전체 고정 */
+tbody td:first-child,
+thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background-color: #fff7d6;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* 헤더 우선순위 더 높임 */
+thead th:first-child {
+  z-index: 4;
+}
+
+/* =========================
+   색상 강조 (선택 대학 컬럼)
+=========================*/
+
+.selected-col-0 { background-color: #e6f1ff; }
+.selected-col-1 { background-color: #fff0e6; }
+.selected-col-2 { background-color: #e9ffef; }
+.selected-col-3 { background-color: #f4e9ff; }
+.selected-col-4 { background-color: #fff3f3; }
+
+/* 테두리 더 두껍게 */
+th, td {
+  border-right: 1px solid #cbd3e3;
+}
+
+.selected-outline {
+  border-right: 3px solid #0b3cff;
+}
+
+/* =========================
+   검색 하이라이트
+=========================*/
+.highlight {
+  background-color: #ffe066 !important;
+  font-weight: 900;
+}
+
+/* =========================
+   행 hover 효과
+=========================*/
+tbody tr:hover {
+  background-color: #f4f7ff;
+  transition: 0.2s;
+}
+
+/* =========================
+   상단 이동 버튼
+=========================*/
 #scrollTopBtn {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #555;
+  right: 25px;
+  bottom: 25px;
+  background-color: #0039e6;
   color: white;
-  border: none;
-  padding: 10px;
+  padding: 12px 14px;
   border-radius: 50%;
+  font-size: 16px;
   cursor: pointer;
   display: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
