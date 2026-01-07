@@ -1,102 +1,120 @@
 let jsonData = [];
 let selectedUniversities = [];
+const maxSelected = 5;
 
+// 기본 JSON 파일 경로
+const dataUrl = "./data/gpa_data_경고서서성연중한_web.json";
+
+// JSON 데이터 불러오기
 async function loadData() {
-    try {
-        const response = await fetch('./data/gpa_data_final_web_ready.json');
-        jsonData = await response.json();
-
-        populateDropdowns();
-        renderTable();  // 초기에는 전체 대학 보여주기
-    } catch (error) {
-        console.error("데이터 로딩 실패:", error);
-    }
+  try {
+    const response = await fetch(dataUrl);
+    jsonData = await response.json();
+    populateDropdown();
+    renderTable(); // 첫 화면에 전체 출력
+  } catch (err) {
+    console.error("데이터 로딩 실패:", err);
+  }
 }
 
-function populateDropdowns() {
-    const dropdowns = [
-        document.getElementById('collegeSelect1'),
-        document.getElementById('collegeSelect2'),
-        document.getElementById('collegeSelect3')
-    ];
+// 드롭다운 옵션 채우기
+function populateDropdown() {
+  const dropdown = document.getElementById("collegeDropdown");
+  const headers = Object.keys(jsonData[0]).filter(h => h !== "70%컷");
 
-    // JSON 데이터에서 열 이름 추출 (첫 행 기준)
-    const universityNames = Object.keys(jsonData[0]).filter(col => col !== "70%컷");
-
-    dropdowns.forEach(dropdown => {
-        dropdown.innerHTML = '<option value="">대학 선택</option>';
-        universityNames.forEach(name => {
-            const option = document.createElement('option');
-            option.value = name;
-            option.textContent = name;
-            dropdown.appendChild(option);
-        });
-
-        dropdown.addEventListener('change', () => {
-            selectedUniversities = dropdowns.map(d => d.value).filter(v => v);
-            renderTable();
-        });
-    });
-
-    // 초기화 버튼 처리
-    const resetBtn = document.getElementById('resetBtn');
-    resetBtn.addEventListener('click', () => {
-        selectedUniversities = [];
-        dropdowns.forEach(d => d.value = "");
-        renderTable();
-    });
+  dropdown.innerHTML = '<option value="">대학 선택</option>';
+  headers.forEach(header => {
+    const option = document.createElement("option");
+    option.value = header;
+    option.textContent = header;
+    dropdown.appendChild(option);
+  });
 }
 
+// 대학 추가
+function addUniversity() {
+  const dropdown = document.getElementById("collegeDropdown");
+  const selected = dropdown.value;
+
+  if (!selected || selectedUniversities.includes(selected)) return;
+
+  if (selectedUniversities.length >= maxSelected) {
+    alert("최대 5개 대학까지만 비교할 수 있습니다.");
+    return;
+  }
+
+  selectedUniversities.push(selected);
+  dropdown.value = "";
+  renderSelected();
+  renderTable();
+}
+
+// 선택된 대학 뱃지 렌더링
+function renderSelected() {
+  const container = document.getElementById("selectedUniversities");
+  container.innerHTML = "";
+
+  selectedUniversities.forEach(uni => {
+    const badge = document.createElement("div");
+    badge.className = "badge";
+    badge.innerHTML = `${uni} <button onclick="removeUniversity('${uni}')">×</button>`;
+    container.appendChild(badge);
+  });
+}
+
+// 대학 제거
+function removeUniversity(name) {
+  selectedUniversities = selectedUniversities.filter(uni => uni !== name);
+  renderSelected();
+  renderTable();
+}
+
+// 초기화
+function resetSelection() {
+  selectedUniversities = [];
+  document.getElementById("collegeDropdown").value = "";
+  renderSelected();
+  renderTable();
+}
+
+// 테이블 렌더링
 function renderTable() {
-    const table = document.getElementById('comparisonTable');
-    table.innerHTML = '';
+  const table = document.getElementById("comparisonTable");
+  if (!table) return;
 
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
+  // 헤더
+  let tableHTML = `<thead><tr>`;
+  tableHTML += `<th class="cut-col sticky-col w-20">70%컷</th>`;
 
-    // 첫 번째 열 (70%컷)
-    const thBase = document.createElement('th');
-    thBase.textContent = '70%컷';
-    thBase.className = 'bg-blue-100 border px-2 py-2 text-sm font-semibold text-center';
-    headerRow.appendChild(thBase);
+  const headers = Object.keys(jsonData[0]).filter(h => h !== "70%컷");
+  const visibleUniversities = selectedUniversities.length > 0 ? selectedUniversities : headers;
 
-    // 선택된 대학이 없으면 전체 대학 표시
-    const columns = selectedUniversities.length === 0
-        ? Object.keys(jsonData[0]).filter(key => key !== "70%컷")
-        : selectedUniversities;
+  visibleUniversities.forEach(uni => {
+    tableHTML += `<th class="uni-col">${uni}</th>`;
+  });
 
-    columns.forEach(col => {
-        const th = document.createElement('th');
-        th.textContent = col;
-        th.className = 'bg-blue-100 border px-2 py-2 text-sm font-semibold text-center';
-        headerRow.appendChild(th);
+  tableHTML += `</tr></thead><tbody>`;
+
+  // 데이터
+  jsonData.forEach(row => {
+    tableHTML += `<tr>`;
+    tableHTML += `<td class="sticky-col cut-col">${row["70%컷"] || ""}</td>`;
+
+    visibleUniversities.forEach(uni => {
+      const content = row[uni] || "";
+      tableHTML += `<td class="uni-col whitespace-pre-line text-sm">${content}</td>`;
     });
 
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+    tableHTML += `</tr>`;
+  });
 
-    const tbody = document.createElement('tbody');
-
-    jsonData.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-gray-50 transition';
-
-        const tdBase = document.createElement('td');
-        tdBase.textContent = row["70%컷"] || '';
-        tdBase.className = 'border px-2 py-1 text-center text-xs text-blue-700';
-        tr.appendChild(tdBase);
-
-        columns.forEach(col => {
-            const td = document.createElement('td');
-            td.textContent = row[col] || '';
-            td.className = 'border px-2 py-1 whitespace-pre-line text-sm text-gray-800';
-            tr.appendChild(td);
-        });
-
-        tbody.appendChild(tr);
-    });
-
-    table.appendChild(tbody);
+  tableHTML += `</tbody>`;
+  table.innerHTML = tableHTML;
 }
 
-document.addEventListener('DOMContentLoaded', loadData);
+// 이벤트 연결
+document.addEventListener("DOMContentLoaded", () => {
+  loadData();
+  document.getElementById("addBtn").addEventListener("click", addUniversity);
+  document.getElementById("resetBtn").addEventListener("click", resetSelection);
+});
